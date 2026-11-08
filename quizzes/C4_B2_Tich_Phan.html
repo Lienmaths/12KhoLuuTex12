@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>C4_B1_Nguyen_Ham</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 15px; line-height: 1.6; padding-top: 70px; overflow-x: hidden; background: #f7fbff; }
+        .header-bar { position: fixed; top: 0; left: 0; width: 100%; background: #1e88e5; color: white; padding: 10px 15px; z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; box-shadow: 0 2px 6px rgba(30,136,229,0.2); }
+        .header-bar h2 { margin: 0; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 65%; }
+        #timer { font-size: 16px; font-weight: bold; background: #e53935; padding: 5px 10px; border-radius: 4px; white-space: nowrap; }
+        
+        .zalo-warning { background: #eef6fc; color: #1565c0; padding: 10px; border: 1px solid #b3d4fc; border-radius: 4px; margin-bottom: 15px; font-weight: bold; text-align: justify; font-size: 14px; }
+        
+        h3 { color: #1565c0; border-bottom: 2px solid #b3d4fc; padding-bottom: 5px; margin-top: 30px; text-transform: uppercase; font-size: 18px; }
+        .info-group { margin-bottom: 15px; }
+        .info-group input { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #b3d4fc; border-radius: 4px; font-size: 16px; background: #fff; }
+        .info-group input:focus { border-color: #1e88e5; outline: none; box-shadow: 0 0 0 3px rgba(30,136,229,0.12); }
+        
+        .question { background: #eef6fc; padding: 15px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #b3d4fc; box-sizing: border-box; width: 100%; overflow-x: auto; }
+        .question-text { margin-bottom: 15px; word-wrap: break-word; } 
+        
+        mjx-container { max-width: 100%; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
+        
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #ffffff; border: 1px solid #b3d4fc; border-radius: 4px; cursor: pointer; transition: 0.3s; }
+        .options label:hover { background: #e3f0fb; border-color: #1e88e5; }
+        
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 15px 0; }
+        .tf-table { width: 100%; border-collapse: collapse; background: #fff; min-width: 320px; }
+        .tf-table td { padding: 10px; border: 1px solid #b3d4fc; }
+        .tf-radio-group { display: flex; gap: 10px; justify-content: center; }
+        .tf-radio-group label { cursor: pointer; font-weight: bold; padding: 5px; border-radius: 3px; transition: 0.3s; }
+        
+        .short-ans-group { display: flex; gap: 8px; margin-top: 5px; flex-wrap: wrap; }
+        .short-ans-box { width: 50px; height: 55px; font-size: 24px; text-align: center; border: 2px solid #1e88e5; border-radius: 5px; box-sizing: border-box; font-weight: bold; color: #1565c0; background: #fff; transition: 0.3s; }
+        .short-ans-box:focus { border-color: #0d47a1; outline: none; box-shadow: 0 0 6px rgba(30,136,229,0.3); }
+        
+        .essay-input { width: 100%; padding: 12px; font-size: 16px; border: 2px solid #b3d4fc; border-radius: 4px; box-sizing: border-box; height: 150px; resize: vertical; background: #fff; }
+        .essay-input:focus { border-color: #1e88e5; outline: none; }
+        
+        .solution-box { display: none; margin-top: 15px; padding: 15px; background: #e8f4fc; border-left: 5px solid #0288d1; border-radius: 4px; overflow-x: auto; }
+        
+        button.submit-btn { width: 100%; padding: 15px; background: #1e88e5; color: white; border: none; border-radius: 4px; font-size: 18px; cursor: pointer; margin-top: 15px; font-weight: bold; margin-bottom: 5px; }
+        button.submit-btn:hover { background: #1565c0; }
+        #result { display: none; margin-top: 20px; padding: 15px; border-radius: 4px; text-align: center; font-weight: bold; font-size: 18px; background: #eef6fc; color: #0d47a1; border: 1px solid #b3d4fc; margin-bottom: 20px;}
+        
+        #passwordPrompt { display: none; margin-top: 20px; padding: 20px; background: #eef6fc; border: 1px solid #b3d4fc; border-radius: 5px; text-align: center; margin-bottom: 40px; }
+        #passwordPrompt h4 { color: #1565c0; margin-top: 0; margin-bottom: 10px; }
+        #passwordPrompt input { padding: 10px; width: 60%; max-width: 250px; border: 1px solid #b3d4fc; border-radius: 4px; font-size: 16px; }
+        #passwordPrompt button { width: auto; padding: 10px 20px; background: #1e88e5; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; margin-left: 10px; }
+        
+        svg { max-width: 100%; height: auto; display: block; margin: 10px auto; }
+        
+        /* ===== Bổ sung của bộ chuyển đổi TeX2HTML (PyQt6) ===== */
+        .tp { margin: 6px 0; }
+        .center { text-align: center; }
+        .figure svg, .figure img { max-width: 100%; height: auto; }
+        .fig-error { color: #b00020; border: 1px dashed #b00020; padding: 6px 10px; text-align: center; margin: 8px 0; font-size: 14px; }
+        .fbox { border: 1px solid currentColor; padding: 0 4px; }
+        blockquote { margin: 8px 20px; }
+        img { max-width: 100%; height: auto; }
+        ul, ol { margin: 6px 0; padding-left: 24px; }
+        ul.desc, li.cl { list-style: none; }
+        li.cl .lbl { font-weight: bold; margin-right: .4em; }
+        ol[class^="paren-"] { list-style: none; counter-reset: pc; padding-left: 2.2em; }
+        ol[class^="paren-"] > li { counter-increment: pc; position: relative; margin: 4px 0; }
+        ol[class^="paren-"] > li::before { position: absolute; left: -2.2em; width: 2em; text-align: right; font-weight: bold; }
+        ol.paren-a > li::before { content: counter(pc, lower-alpha) ")"; }
+        ol.paren-A > li::before { content: counter(pc, upper-alpha) ")"; }
+        ol.paren-i > li::before { content: counter(pc, lower-roman) ")"; }
+        ol.paren-I > li::before { content: counter(pc, upper-roman) ")"; }
+        ol.paren-1 > li::before { content: counter(pc, decimal) ")"; }
+        table.tex-table { border-collapse: collapse; margin: 8px auto; }
+        table.tex-table td { padding: 4px 10px; }
+        table.tex-table.bordered td { border: 1px solid #555; }
+
+
+
+        /* --- CSS CHO KHUNG ZOOM VÀ TỰ TĂNG CHIỀU CAO --- */
+        .zoom-container {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+            position: relative;
+        }
+        .zoom-viewport {
+            overflow: hidden;
+            border-radius: 4px;
+            border: 1px solid #b3d4fc;
+            background: #ffffff;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: height 0.1s ease-out;
+            box-sizing: border-box;
+            cursor: grab;
+            position: relative;
+        }
+        .zoom-viewport:active {
+            cursor: grabbing;
+        }
+        .zoom-toolbar {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            background: #eef6fc;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #b3d4fc;
+            flex-shrink: 0;
+            z-index: 20;
+        }
+        .zoom-btn {
+            background: #1e88e5;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            font-size: 14px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s, opacity 0.2s;
+            white-space: nowrap;
+        }
+        .zoom-btn:hover:not(:disabled) {
+            background: #1565c0;
+        }
+        .zoom-btn:disabled {
+            background: #b3d4fc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .zoom-media {
+            transition: transform 0.1s ease-out;
+            transform-origin: center center;
+            max-width: 100%;
+            height: auto;
+            user-select: none;
+            display: block;
+        }
+    </style>
+    
+    <script>
+        window.MathJax = {
+          tex: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            displayMath: [['$$','$$'], ['\\[','\\]']],
+            processEscapes: true,
+            macros: {"wideparen": ["\\overset{\\frown}{#1}", 1], "overarc": ["\\overset{\\frown}{#1}", 1]}
+          },
+          options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+</head>
+<body>
+    <div class="header-bar">
+        <h2>C4_B1_Nguyen_Ham</h2>
+        <div id="timer">Đang tải...</div>
+    </div>
+    
+    <div class="zalo-warning" id="zaloWarning">
+        ⚠️ CHÚ Ý: Nếu em đang mở bài này trực tiếp trên Zalo/Messenger, hãy bấm vào biểu tượng "Dấu 3 chấm" ở góc phải màn hình và chọn "Mở bằng trình duyệt" (Chrome/Safari) để không bị lỗi kết nối.
+    </div>
+
+    <div class="info-group">
+        <label>Họ và tên học sinh:</label>
+        <input type="text" id="studentName" placeholder="Nhập họ và tên..." required>
+    </div>
+    <div class="info-group">
+        <label>Lớp:</label>
+        <input type="text" id="studentClass" placeholder="Nhập lớp..." required>
+    </div>
+
+    <hr>
+    <form id="quizForm" onsubmit="return false;">
+        <h3>PHẦN 1. Câu trắc nghiệm nhiều phương án lựa chọn</h3>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 1:</b> Cho $\displaystyle\int_0^{\ln 2}\left[2 f(x)+\mathrm{e}^x\right]\mathrm{d} x=5$. Khi đó giá trị tích phân $\displaystyle\int_0^{\ln 2} f(x) \,\mathrm{d}x$ bằng</div></div><div class="options"><label><input type="radio" name="P1_Cau_1" value="A"> <b>A.</b> $3$</label><label><input type="radio" name="P1_Cau_1" value="B"> <b>B.</b> $\dfrac{5}
+		{2}$</label><label><input type="radio" name="P1_Cau_1" value="C"> <b>C.</b> $2$</label><label><input type="radio" name="P1_Cau_1" value="D"> <b>D.</b> $1$</label></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> $\displaystyle\int_0^{\ln 2}\left[2 f(x)+\mathrm{e}^x\right]\mathrm{d}x=5 \Leftrightarrow 2\displaystyle\int_0^{\ln 2} f(x) \,\mathrm{d}x + 1=5 \Leftrightarrow \displaystyle\int_0^{\ln 2} f(x) \,\mathrm{d}x =2$.</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 2:</b> Cho hàm số $f(x)$ liên tục trên đoạn $[a;b]$. Hãy chọn mệnh đề <b>sai</b> trong các mệnh đề sau</div></div><div class="options"><label><input type="radio" name="P1_Cau_2" value="A"> <b>A.</b> $\displaystyle\int_a^b f(x) \,\mathrm{d}x=-\displaystyle\int_b^a f(x) \,\mathrm{d}x$</label><label><input type="radio" name="P1_Cau_2" value="B"> <b>B.</b> $\displaystyle\int_a^b k \,\mathrm{d}x=k(b-a)$, $\forall k \in \mathbb{R}$</label><label><input type="radio" name="P1_Cau_2" value="C"> <b>C.</b> $\displaystyle\int_a^b f(x) \,\mathrm{d}x=\displaystyle\int_a^c f(x) \,\mathrm{d}x+\displaystyle\int_c^b f(x) \,\mathrm{d}x$ với $c \in [a;b]$</label><label><input type="radio" name="P1_Cau_2" value="D"> <b>D.</b> $\displaystyle\int_a^b f(x) \,\mathrm{d}x=\displaystyle\int_b^a f(x) \,\mathrm{d}x$</label></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Ta có $\displaystyle\int_a^b f(x) \,\mathrm{d}x=-\displaystyle\int_b^a f(x) \,\mathrm{d}x$.</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 3:</b> Cho $f(x)$ là hàm số liên tục trên đoạn $\left[a;b\right]$ và nguyên hàm $F(x)$. Khẳng định nào sau đây là <b>sai</b>?</div></div><div class="options"><label><input type="radio" name="P1_Cau_3" value="A"> <b>A.</b> $\displaystyle\int_a^b{f(x)}\,\mathrm{d}x=F(x)\bigg|_a^b=F(b)-F(a)$</label><label><input type="radio" name="P1_Cau_3" value="B"> <b>B.</b> $\displaystyle\int_a^a{f(x)}\,\mathrm{d}x=0$</label><label><input type="radio" name="P1_Cau_3" value="C"> <b>C.</b> $\displaystyle\int_a^b{f(x)}\,\mathrm{d}x=f'(x)\bigg|_a^b=f'(b)-f'(a)$</label><label><input type="radio" name="P1_Cau_3" value="D"> <b>D.</b> $\displaystyle\int_a^b{f(x)}\,\mathrm{d}x=-\displaystyle\int_b^a{f(t)}\,\mathrm{d}t$</label></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Theo định nghĩa tích phân ta có $\displaystyle\int_a^b{f(x)}\,\mathrm{d}x=F(x)\bigg|_a^b=F(b)-F(a)$.<br> Từ định nghĩa tích phân suy ra $\displaystyle\int_a^a{f(x)}\,\mathrm{d}x=F(a)-F(a)=0$. <br> Theo tính chất tích phân ta có $\displaystyle\int_a^b{f(x)}\,\mathrm{d}x=-\displaystyle\int_b^a{f(x)}\,\mathrm{d}x=-\displaystyle\int_b^a{f(t)}\,\mathrm{d}t$.<br> Theo định nghĩa tích phân thì ta có $\displaystyle\int_a^b{f'(x)}\,\mathrm{d}x=f(x)\bigg|_a^b=f(b)-f(a)$.</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 4:</b> Cho hàm số $y=f(x)$ có đạo hàm $f'(x)$ liên tục trên $R$ và $f(2)=-4$, $f(1)=-6$. Tính tích phân $I=\displaystyle\int_1^2 f'(x)\,\mathrm{d}x$</div></div><div class="options"><label><input type="radio" name="P1_Cau_4" value="A"> <b>A.</b> $I=-2$</label><label><input type="radio" name="P1_Cau_4" value="B"> <b>B.</b> $I=-10$</label><label><input type="radio" name="P1_Cau_4" value="C"> <b>C.</b> $I=10$</label><label><input type="radio" name="P1_Cau_4" value="D"> <b>D.</b> $I=2$</label></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Ta có $I=\displaystyle\int_1^2 f'(x)\,\mathrm{d}x = f(x)\bigg|_1^2=f(2)-f(1)=2$.</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 5:</b> Tích phân $\displaystyle \int_0^{\tfrac{\pi}{2}} \left(2 \sin x + 3 \cos x\right) \,\mathrm{d}x$ bằng</div></div><div class="options"><label><input type="radio" name="P1_Cau_5" value="A"> <b>A.</b> $5$</label><label><input type="radio" name="P1_Cau_5" value="B"> <b>B.</b> $0$</label><label><input type="radio" name="P1_Cau_5" value="C"> <b>C.</b> $1$</label><label><input type="radio" name="P1_Cau_5" value="D"> <b>D.</b> $-1$</label></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Ta có $\displaystyle \int_0^{\tfrac{\pi}{2}} (2\sin x + 3\cos x) \,\mathrm{d}x=(-2\cos x+3 \sin x) \Bigg| _0^{\tfrac{\pi}{2}}=5$.</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 6:</b> Một vật chuyển động chậm dần đều với vận tốc $v(t)=160-10t$ (m/s). Tính quãng đường $s$ mà vật di chuyển trong khoảng thời gian từ thời điểm $t=0$ (s) đến thời điểm vật dừng lại.</div></div><div class="options"><label><input type="radio" name="P1_Cau_6" value="A"> <b>A.</b> $s=3\,840$ m</label><label><input type="radio" name="P1_Cau_6" value="B"> <b>B.</b> $s=2\,560$ m</label><label><input type="radio" name="P1_Cau_6" value="C"> <b>C.</b> $s=2\,840$ m</label><label><input type="radio" name="P1_Cau_6" value="D"> <b>D.</b> $s=1\,280$ m</label></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Vật dừng khi $v(t)=160-10t=0\Rightarrow t=16$ (s).<br> Vậy quãng đường $s$ mà vật di chuyển trong khoảng thời gian từ thời điểm $t=0$ (s) đến thời điểm vật dừng lại là \[\displaystyle\int_0^{16} (160-10t) \,\mathrm{d}t=1\,280\,\, \mathrm{(m)}.\]</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 7:</b> Nếu $\displaystyle\int_0^1 f(x) \,\mathrm{d}x=-2$ và $\displaystyle\int_1^2 f(x) \,\mathrm{d}x=3$ thì $\displaystyle\int_0^2 f(x) \,\mathrm{d}x$ bằng</div></div><div class="options"><label><input type="radio" name="P1_Cau_7" value="A"> <b>A.</b> $5$</label><label><input type="radio" name="P1_Cau_7" value="B"> <b>B.</b> $-5$</label><label><input type="radio" name="P1_Cau_7" value="C"> <b>C.</b> $1$</label><label><input type="radio" name="P1_Cau_7" value="D"> <b>D.</b> $-1$</label></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Ta có $\displaystyle\int_0^2 f(x) \,\mathrm{d}x=\displaystyle\int_0^1 f(x) \,\mathrm{d}x+\displaystyle\int_1^2 f(x) \,\mathrm{d}x=-2+3=1$.</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 8:</b> Cho hàm số $f(x)$ có đạo hàm liên tục trên đoạn $[-1;3]$, biết $f(3)=5$, $f(-1)=-2$. Giá trị của tích phân $\displaystyle\int_{-3}^1 f'(x)\,\mathrm{d}x$ là</div></div><div class="options"><label><input type="radio" name="P1_Cau_8" value="A"> <b>A.</b> $7$</label><label><input type="radio" name="P1_Cau_8" value="B"> <b>B.</b> $3$</label><label><input type="radio" name="P1_Cau_8" value="C"> <b>C.</b> $4$</label><label><input type="radio" name="P1_Cau_8" value="D"> <b>D.</b> $-7$</label></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Theo định lý cơ bản của tích phân, ta có \[
+			\displaystyle\int_{-1}^3 f'(x) \,\mathrm{d}x = f(3) - f(-1) = 5 - (-2) = 7.
+			\]</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 9:</b> Nếu $\displaystyle\int_0^1f(x)\,\mathrm{d}x=37$ và $\displaystyle\int_0^1g(x)\,\mathrm{d}x=16$ thì $\displaystyle\int_0^1[2f(x)+3g(x)]\,\mathrm{d}x$ bằng</div></div><div class="options"><label><input type="radio" name="P1_Cau_9" value="A"> <b>A.</b> $122$</label><label><input type="radio" name="P1_Cau_9" value="B"> <b>B.</b> $53$</label><label><input type="radio" name="P1_Cau_9" value="C"> <b>C.</b> $48$</label><label><input type="radio" name="P1_Cau_9" value="D"> <b>D.</b> $74$</label></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Ta có \[
+			\displaystyle\int_0^1[2f(x)+3g(x)]\,\mathrm{d}x=2\displaystyle\int_0^1f(x)\,\mathrm{d}x+3\displaystyle\int_0^1g(x)\,\mathrm{d}x=2\cdot 37 + 3 \cdot 16=122.
+			\]</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 10:</b> Giả sử $\displaystyle\int_0^9f(x)\,\mathrm{d}x=37$ và $\displaystyle\int_{9}^0g(x)\,\mathrm{d}x=16$. Khi đó, $I=\displaystyle\int_0^9\left[2f(x)+3 g(x)\right]\,\mathrm{d}x$ bằng</div></div><div class="options"><label><input type="radio" name="P1_Cau_10" value="A"> <b>A.</b> $I=143$</label><label><input type="radio" name="P1_Cau_10" value="B"> <b>B.</b> $I=58$</label><label><input type="radio" name="P1_Cau_10" value="C"> <b>C.</b> $I=122$</label><label><input type="radio" name="P1_Cau_10" value="D"> <b>D.</b> $I=26$</label></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Do $\displaystyle\int_{9}^0g(x)\,\mathrm{d}x=16$ nên $\displaystyle\int_0^9g(x)\,\mathrm{d}x=-16$.<br> Ta có $I=\displaystyle\int_0^9\left[2f(x)+3 g(x)\right]\,\mathrm{d}x=2\displaystyle\int_0^9f(x)\,\mathrm{d}x+3\displaystyle\int_0^9g(x)\,\mathrm{d}x=2\cdot37+3\cdot(-16)=26$.</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 11:</b> Biết $\displaystyle\int_1^3 \dfrac{x+2}{x} \,\mathrm{d}x=a+b\ln c$, với $a$, $b$, $c \in \mathbb{Z}$, $c&lt;9$. Tính tổng $S=a+b+c$.</div></div><div class="options"><label><input type="radio" name="P1_Cau_11" value="A"> <b>A.</b> $S=7$</label><label><input type="radio" name="P1_Cau_11" value="B"> <b>B.</b> $S=5$</label><label><input type="radio" name="P1_Cau_11" value="C"> <b>C.</b> $S=8$</label><label><input type="radio" name="P1_Cau_11" value="D"> <b>D.</b> $S=6$</label></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> $\displaystyle\int_1^3 \dfrac{x+2}{x} \,\mathrm{d}x=\displaystyle\int_1^3 \left(1+\dfrac{2}{x}\right) \,\mathrm{d}x=\displaystyle\int_1^3 1 \,\mathrm{d}x+\displaystyle\int_1^3 \dfrac{2}{x} \,\mathrm{d}x=\left(x+2\ln |x|\right) \Bigg|_1^3=2+2\ln 3$.<br> Do đó $a=2$, $b=2$, $c=3$ nên $S=7$.</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 12:</b> Cho hàm số $f(x) = \left\{\begin{aligned}&amp; x+2 &amp;\text{ khi }&amp; -3 \le x \le -1 \\&amp; x^2 &amp; \text{ khi } &amp;x \ge -1\end{aligned}\right.$. Tính $\displaystyle\int_{-3}^3 f(x)\,\mathrm{d}x$.</div></div><div class="options"><label><input type="radio" name="P1_Cau_12" value="A"> <b>A.</b> $\dfrac{22}
+		{3}$</label><label><input type="radio" name="P1_Cau_12" value="B"> <b>B.</b> $\dfrac{31}
+		{3}$</label><label><input type="radio" name="P1_Cau_12" value="C"> <b>C.</b> $\dfrac{28}{3}$</label><label><input type="radio" name="P1_Cau_12" value="D"> <b>D.</b> $\dfrac{26}{3}$</label></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Ta có $\displaystyle\int_{-3}^3 f(x) \,\mathrm{d}x = \int_{-3}^{-1} (x+2) \,\mathrm{d}x + \displaystyle\int_{-1}^3 x^2 \,\mathrm{d}x=0 + \dfrac{28}{3} = \dfrac{28}{3}$.</div></div></div>
+<h3>PHẦN 2. Câu trắc nghiệm đúng sai</h3>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 1:</b> Cho hàm số $f(x)=x^2+2x$ và $F(x)$ là một nguyên hàm của hàm số $f(x)$. Khi đó</div></div><div class="options"><div class="table-responsive"><table class="tf-table"><tr><td><b>a.</b> $\displaystyle\int_1^3{f(x)}\,\mathrm{d}x=F(3)-F(1)$</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_1_a" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_1_a" value="Sai"> S</label></div></td></tr><tr><td><b>b.</b> Nếu $F(0)=1$ thì $F(2)=\dfrac{25}{3}$</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_1_b" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_1_b" value="Sai"> S</label></div></td></tr><tr><td><b>c.</b> Nếu $\displaystyle\int_0^2{kf(x)}\,\mathrm{d}x=2$ thì $k=\dfrac{3}{10}$</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_1_c" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_1_c" value="Sai"> S</label></div></td></tr><tr><td><b>d.</b> Biết $\displaystyle\int_1^3{\dfrac{f(x)}{x^2}}\,\mathrm{d}x=a+a\ln b$, với $a$, $b \in \mathbb{Z}$. Khi đó $3a-5b=-8$</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_1_d" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_1_d" value="Sai"> S</label></div></td></tr></table></div></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> <ol class="paren-a"><li>Theo định nghĩa ta có $\displaystyle\int_1^3{f(x)}\,\mathrm{d}x=F(x)\bigg|_1^3=F(3)-F(1)$.</li><li>Ta có $F(x)=\displaystyle\int{f(x)}\,\mathrm{d}x=\displaystyle\int{\left(x^2+2x\right)}\,\mathrm{d}x=\dfrac{x^3}{3}+x^2+C$.<br> Vì $F(0)=1$ nên tìm được $C=1$. <br> Khi đó $F(x)= \dfrac{x^3}{3}+x^2+1$ nên suy ra $F(2)=\dfrac{2^3}{3}+2^2+1=\dfrac{23}{3}$.</li><li>Nếu $\displaystyle\int_0^2{kf(x)}\,\mathrm{d}x=2\Leftrightarrow k\cdot\displaystyle\int_0^2{f(x)}\,\mathrm{d}x=2\Leftrightarrow k\displaystyle\int_0^2{\left(x^2+2x\right)}\,\mathrm{d}x=2\Leftrightarrow k\cdot \dfrac{20}{3}=2$ suy ra $k=\dfrac{3}{10}$.</li><li>Ta có $\displaystyle\int_1^3{\dfrac{f(x)}{x^2}}\,\mathrm{d}x=\displaystyle\int_1^3{\dfrac{x^2+2x}{x^2}}\,\mathrm{d}x=\displaystyle\int_1^3{\left(1+\dfrac{2}{x}\right)}\,\mathrm{d}x=\left(x+2\ln |x|\right)\Bigg|_1^3=2+2\ln3$.<br> Suy ra $a=2$ và $b=3$.<br> Vậy $3a-5b=-9$.</li></ol></div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 2:</b> Cho hàm số $f(x)$ liên tục trên đoạn $[0; 10]$ thỏa mãn $\displaystyle\int_0^{10} f(x) \,\mathrm{d}x = 7$ và $\displaystyle\int_2^6 f(x) \,\mathrm{d}x = 3$.</div></div><div class="options"><div class="table-responsive"><table class="tf-table"><tr><td><b>a.</b> $\displaystyle\int_0^2 f(x) \,\mathrm{d}x + \displaystyle\int_6^{10} f(x) \,\mathrm{d}x = 4$</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_2_a" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_2_a" value="Sai"> S</label></div></td></tr><tr><td><b>b.</b> Nếu $f(x)$ là hàm chẵn thì $\displaystyle\int_{-10}^{10} f(x) \,\mathrm{d}x = 0$</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_2_b" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_2_b" value="Sai"> S</label></div></td></tr><tr><td><b>c.</b> Giá trị của tích phân $\displaystyle\int_0^{10} [f(x) + 2x] \,\mathrm{d}x = 107$</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_2_c" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_2_c" value="Sai"> S</label></div></td></tr><tr><td><b>d.</b> Trung bình cộng của hàm số $f(x)$ trên đoạn $[0;10]$ bằng $7$</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_2_d" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_2_d" value="Sai"> S</label></div></td></tr></table></div></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> <ol class="paren-a"><li>Ta có $\displaystyle\int_0^{10} f(x) \mathrm{d}x = \displaystyle\int_0^2 f(x) \mathrm{d}x + \displaystyle\int_2^6 f(x) \mathrm{d}x + \displaystyle\int_6^{10} f(x) \mathrm{d}x$. <br> Suy ra $\displaystyle\int_0^2 f(x) \mathrm{d}x + \displaystyle\int_6^{10} f(x) \mathrm{d}x = 7 - 3 = 4$.</li><li>Nếu $f(x)$ là hàm chẵn thì $\displaystyle\int_{-10}^{10} f(x) \mathrm{d}x = 2\displaystyle\int_0^{10} f(x) \mathrm{d}x = 14 \ne 0$.</li><li>$\displaystyle\int_0^{10} [f(x) + 2x] \mathrm{d}x = \displaystyle\int_0^{10} f(x) \mathrm{d}x + \displaystyle\int_0^{10} 2x \mathrm{d}x = 7 + x^2\bigg|_0^{10} = 7 + 100 = 107$.</li><li>Giá trị trung bình là $\dfrac{1}{10-0}\displaystyle\int_0^{10} f(x) \mathrm{d}x = \dfrac{7}{10} = 0{,}7$.</li></ol></div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 3:</b> Một ô tô đang chạy với vận tốc $20\ \mathrm{m/s}$ thì thấy chướng ngại vật và đạp phanh. Từ thời điểm đó, ô tô chuyển động chậm dần đều với vận tốc $v(t) = -2t + 20$, với $t$ là thời gian (giây) kể từ lúc đạp phanh.</div></div><div class="options"><div class="table-responsive"><table class="tf-table"><tr><td><b>a.</b> Ô tô dừng lại sau $10$ (giây)</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_3_a" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_3_a" value="Sai"> S</label></div></td></tr><tr><td><b>b.</b> Quãng đường $s(t)$ là một nguyên hàm của $v(t)$</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_3_b" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_3_b" value="Sai"> S</label></div></td></tr><tr><td><b>c.</b> Ô tô đi được $90$ (m) từ lúc phanh đến khi dừng lại</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_3_c" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_3_c" value="Sai"> S</label></div></td></tr><tr><td><b>d.</b> Quãng đường mà ô tô đi được trong $15$ (giây) cuối bằng $125$ (m)</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_3_d" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_3_d" value="Sai"> S</label></div></td></tr></table></div></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> <ol class="paren-a"><li>Lúc ô tô dừng lại thì $v(t) = 0 \Leftrightarrow-2t+20=0\Leftrightarrow t = 10$. <br> Vậy ô tô dừng lại sau $10$ giây.</li><li>Quãng đường $s(t)$ là một nguyên hàm của $v(t)$.</li><li>Từ lúc đạp phanh đến khi dừng lại mất $10$ giây nên quãng đường xe đi được là \[s_{10} = \displaystyle\int_0^{10} v(t)\,\mathrm{d}t = \displaystyle\int_0^{10} \left(-2t+20\right)\,\mathrm{d}t = 100 \text{ (m).}\]</li><li>Trong $15$ giây cuối, quãng đường xe đi được là \[s_{15} = 5\cdot20 + s_{10} = 100 + 100 = 200 \text{ (m).}\]</li></ol></div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 4:</b> Một chất điểm chuyển động trên đường thẳng nằm ngang (chiều dương hướng sang phải) với gia tốc phụ thuộc vào thời gian $t$ (s) là $a(t)=2t-7$ (m/s$^2$). Biết vận tốc đầu bằng $6$ (m/s).</div></div><div class="options"><div class="table-responsive"><table class="tf-table"><tr><td><b>a.</b> Vận tốc tức thời của chất điểm tại thời điểm $t$ (s) xác định bởi $v(t)=t^2-7t+10$</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_4_a" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_4_a" value="Sai"> S</label></div></td></tr><tr><td><b>b.</b> Tại thời điểm $t=7$ (s), vận tốc của chất điểm là $6$ (m/s)</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_4_b" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_4_b" value="Sai"> S</label></div></td></tr><tr><td><b>c.</b> Độ dịch chuyển của vật trong khoảng thời gian $1 \le t \le 7$ là $18$ (m)</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_4_c" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_4_c" value="Sai"> S</label></div></td></tr><tr><td><b>d.</b> Trong $8$ giây đầu tiên, thời điểm chất điểm xa nhất về phía bên phải là $t=7$ (s)</td><td style="width: 120px;"><div class="tf-radio-group"><label><input type="radio" name="P2_Cau_4_d" value="Đúng"> Đ</label><label><input type="radio" name="P2_Cau_4_d" value="Sai"> S</label></div></td></tr></table></div></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> <ol class="paren-a"><li>$v(t)=\displaystyle\int\limits a(t) \,\mathrm{d}t=t^2-7t+C$.<br> Khi $t=0$ thì $v=6$ (m/s), suy ra $v(0)=6 \Rightarrow C=6$.<br> Vậy $v(t)=t^2-7t+6$ (m/s).</li><li>Ta có $v(7)=7^2-7\cdot7+6=49-49+6=6$ (m/s).</li><li>Độ dịch chuyển $\Delta s=s(7)-s(1)=\displaystyle\int_1^7 v(t)\,\mathrm{d}t=\displaystyle\int_1^7 (t^2-7t+6) \,\mathrm{d}t=-18\ne 18$.</li><li>Độ dịch chuyển là $d(t)=\displaystyle\int\limits v(t)\,\mathrm{d}t=\dfrac{t^3}{3}-\dfrac{7t^2}{2}+6t+C$.<br> $d(0)=0 \Rightarrow C=0 \Rightarrow d(t)=\dfrac{t^3}{3}-\dfrac{7t^2}{2}+6t$.<br> Ta có $d'(t)=0 \Leftrightarrow v(t)=0 \Leftrightarrow t^2-7t+6=0 \Leftrightarrow t=1$ hoặc $t=6$.<br> Tính các giá trị: $d(0)=0$; $d(1) \approx 2{,}83$; $d(6)=-18$; $d(8) \approx -5{,}33$.<br> Vậy thời điểm chất điểm xa nhất về phía bên phải (giá trị $d(t)$ lớn nhất) là $t=1$.</li></ol></div></div></div>
+<h3>PHẦN 3. Câu trắc nghiệm trả lời ngắn</h3>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 1:</b> Một xe ô tô đang chạy với vận tốc $18$ (m/s) thì người lái xe bất ngờ phát hiện chướng ngại vật trên đường. Người lái xe phản ứng một giây, sau đó đạp phanh khẩn cấp. Kể từ thời điểm này, ô tô chuyển động chậm dần đều với tốc độ $v(t)=-10 t+20$ (m/s), trong đó $t$ là thời gian tính bằng giây kể từ lúc đạp phanh. Hỏi kể từ lúc người lái xe phát hiện chướng ngại vật trên đường đến khi dừng hẳn, ô tô di chuyển được quãng đường bằng bao nhiêu mét?</div></div><div class="options"><div class="short-ans-group"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_1_1" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_1_2')" onkeydown="movePrev(event, this, null)"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_1_2" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_1_3')" onkeydown="movePrev(event, this, 'P3_Cau_1_1')"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_1_3" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_1_4')" onkeydown="movePrev(event, this, 'P3_Cau_1_2')"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_1_4" oninput="this.value=this.value.replace('.', ','); moveNext(this, null)" onkeydown="movePrev(event, this, 'P3_Cau_1_3')"></div></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Ta có ô tô dừng khi $v(t)=0\Leftrightarrow -10 t+20 =0\Leftrightarrow t=2$ (s).<br> Quãng đường xe đi được trong $1$ giây phản ứng là $18 \cdot 1 = 18$ (m).<br> Quãng đường xe đi được từ lúc đạp phanh đến khi dừng hẳn là $\displaystyle\int_0^2 \left(-10 t+20\right) \,\mathrm{d}t = 20$ (m).<br> Vậy tổng quãng đường là $18 + 20 = 38$&thinsp;(m).</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 2:</b> Người ta truyền nhiệt (tính bằng $^{\circ}$C) cho một bình nuôi cấy vi sinh vật từ $1^{\circ}$C. Tốc độ tăng nhiệt độ của bình tại thời điểm $t$ phút $(0\leq t \leq 5)$ được cho bởi hàm số $f(t)=3t^2$ ($^{\circ} C$/phút). Biết rằng nhiệt độ của bình đó tại thời điểm $t$ là một nguyên hàm của hàm số $f(t)$, tìm nhiệt độ trung bình của bình đó trong thời gian kể từ khi truyền nhiệt đến $5$ phút đầu (<i>đơn vị độ C và làm tròn kết quả đến hàng đơn&nbsp;vị</i>).</div></div><div class="options"><div class="short-ans-group"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_2_1" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_2_2')" onkeydown="movePrev(event, this, null)"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_2_2" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_2_3')" onkeydown="movePrev(event, this, 'P3_Cau_2_1')"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_2_3" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_2_4')" onkeydown="movePrev(event, this, 'P3_Cau_2_2')"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_2_4" oninput="this.value=this.value.replace('.', ','); moveNext(this, null)" onkeydown="movePrev(event, this, 'P3_Cau_2_3')"></div></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Hàm nhiệt độ $T(t)=\displaystyle\int 3 t^2\,\mathrm{d} t=t^3+C$.<br> Vì $T(0)=1 \Rightarrow C=1 \Rightarrow T(t)=t^3+1$.<br> Nhiệt độ trung bình là \[T_{t b}=\dfrac{1}{5-0} \cdot \displaystyle\int_0^5 (t^3+1)\,\mathrm{d} t = \dfrac{1}{5} \left(\dfrac{t^4}{4}+t\right)\Bigg|_0^5 = \dfrac{1}{5} (156,25 + 5) \approx 32^{\circ} C.\]</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 3:</b> Một chiếc xe đua $F1$ đạt tới vận tốc lớn nhất là $360$ (km/h). Đồ thị bên biểu thị vận tốc $v$ của xe trong $5$ giây đầu tiên kể từ lúc xuất phát. Đồ thị trong $2$ giây đầu là một phần của một parabol đỉnh tại gốc tọa độ $O$, giây tiếp theo là đoạn thẳng và sau đúng $3$ giây thì xe đạt vận tốc lớn nhất. Biết rằng mỗi đơn vị trục hoành biểu thị $1$ giây, mỗi đơn vị trục tung biểu thị $10$ m/s và trong $5$ giây đầu xe chuyển động theo đường thẳng. Hỏi trong $5$ giây đó xe đã đi được quãng đường là bao nhiêu mét?</div><div class="tp"><div class="center"><div class="tp"><div class="table-responsive figure" style="text-align:center;margin:10px 0"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="112.593" height="169.172" viewBox="0 0 112.593 169.172">
+<defs>
+<g>
+<g id="f1_glyph-0-0">
+<path d="M 7.34375 -4.328125 C 7.34375 -5.921875 6.296875 -7 4.8125 -7 C 2.671875 -7 0.484375 -4.75 0.484375 -2.4375 C 0.484375 -0.78125 1.59375 0.21875 3.03125 0.21875 C 5.125 0.21875 7.34375 -1.953125 7.34375 -4.328125 Z M 3.078125 -0.046875 C 2.109375 -0.046875 1.40625 -0.84375 1.40625 -2.15625 C 1.40625 -2.59375 1.546875 -4.03125 2.3125 -5.203125 C 3 -6.234375 3.96875 -6.75 4.75 -6.75 C 5.5625 -6.75 6.453125 -6.1875 6.453125 -4.71875 C 6.453125 -4 6.1875 -2.453125 5.203125 -1.234375 C 4.734375 -0.625 3.921875 -0.046875 3.078125 -0.046875 Z M 3.078125 -0.046875 "/>
+</g>
+<g id="f1_glyph-0-1">
+<path d="M 2.046875 -3.96875 L 2.96875 -3.96875 C 3.171875 -3.96875 3.28125 -3.96875 3.28125 -4.171875 C 3.28125 -4.28125 3.171875 -4.28125 3 -4.28125 L 2.125 -4.28125 C 2.484375 -5.6875 2.53125 -5.890625 2.53125 -5.9375 C 2.53125 -6.109375 2.40625 -6.21875 2.25 -6.21875 C 2.21875 -6.21875 1.9375 -6.203125 1.84375 -5.859375 L 1.453125 -4.28125 L 0.53125 -4.28125 C 0.328125 -4.28125 0.234375 -4.28125 0.234375 -4.09375 C 0.234375 -3.96875 0.3125 -3.96875 0.5 -3.96875 L 1.375 -3.96875 C 0.671875 -1.15625 0.625 -0.984375 0.625 -0.796875 C 0.625 -0.265625 1 0.109375 1.53125 0.109375 C 2.546875 0.109375 3.109375 -1.34375 3.109375 -1.421875 C 3.109375 -1.515625 3.03125 -1.515625 3 -1.515625 C 2.90625 -1.515625 2.890625 -1.484375 2.84375 -1.375 C 2.421875 -0.34375 1.890625 -0.109375 1.5625 -0.109375 C 1.34375 -0.109375 1.25 -0.234375 1.25 -0.5625 C 1.25 -0.796875 1.265625 -0.875 1.3125 -1.046875 Z M 2.046875 -3.96875 "/>
+</g>
+<g id="f1_glyph-0-2">
+<path d="M 4.640625 -3.6875 C 4.640625 -4.234375 4.390625 -4.390625 4.203125 -4.390625 C 3.953125 -4.390625 3.71875 -4.125 3.71875 -3.90625 C 3.71875 -3.78125 3.765625 -3.71875 3.875 -3.609375 C 4.09375 -3.40625 4.21875 -3.15625 4.21875 -2.796875 C 4.21875 -2.375 3.609375 -0.109375 2.453125 -0.109375 C 1.9375 -0.109375 1.71875 -0.453125 1.71875 -0.96875 C 1.71875 -1.53125 1.984375 -2.25 2.296875 -3.078125 C 2.359375 -3.25 2.40625 -3.390625 2.40625 -3.578125 C 2.40625 -4.015625 2.09375 -4.390625 1.59375 -4.390625 C 0.671875 -4.390625 0.28125 -2.953125 0.28125 -2.859375 C 0.28125 -2.765625 0.390625 -2.765625 0.40625 -2.765625 C 0.5 -2.765625 0.515625 -2.78125 0.5625 -2.9375 C 0.859375 -3.9375 1.28125 -4.171875 1.5625 -4.171875 C 1.640625 -4.171875 1.8125 -4.171875 1.8125 -3.84375 C 1.8125 -3.609375 1.71875 -3.328125 1.640625 -3.15625 C 1.203125 -2 1.078125 -1.546875 1.078125 -1.125 C 1.078125 -0.046875 1.953125 0.109375 2.40625 0.109375 C 4.078125 0.109375 4.640625 -3.171875 4.640625 -3.6875 Z M 4.640625 -3.6875 "/>
+</g>
+<g id="f1_glyph-1-0">
+<path d="M 1.265625 -0.765625 L 2.3125 -1.78125 C 3.859375 -3.15625 4.453125 -3.6875 4.453125 -4.6875 C 4.453125 -5.8125 3.5625 -6.609375 2.34375 -6.609375 C 1.234375 -6.609375 0.5 -5.6875 0.5 -4.8125 C 0.5 -4.25 0.984375 -4.25 1.015625 -4.25 C 1.1875 -4.25 1.53125 -4.375 1.53125 -4.78125 C 1.53125 -5.046875 1.359375 -5.296875 1.015625 -5.296875 C 0.9375 -5.296875 0.90625 -5.296875 0.890625 -5.28125 C 1.109375 -5.9375 1.640625 -6.296875 2.21875 -6.296875 C 3.125 -6.296875 3.546875 -5.5 3.546875 -4.6875 C 3.546875 -3.890625 3.0625 -3.109375 2.515625 -2.484375 L 0.609375 -0.359375 C 0.5 -0.265625 0.5 -0.234375 0.5 0 L 4.171875 0 L 4.453125 -1.71875 L 4.203125 -1.71875 C 4.15625 -1.421875 4.09375 -0.984375 3.984375 -0.84375 C 3.921875 -0.765625 3.265625 -0.765625 3.046875 -0.765625 Z M 1.265625 -0.765625 "/>
+</g>
+<g id="f1_glyph-1-1">
+<path d="M 2.875 -3.5 C 3.6875 -3.765625 4.265625 -4.453125 4.265625 -5.234375 C 4.265625 -6.046875 3.390625 -6.609375 2.4375 -6.609375 C 1.4375 -6.609375 0.6875 -6.015625 0.6875 -5.265625 C 0.6875 -4.9375 0.90625 -4.75 1.1875 -4.75 C 1.5 -4.75 1.703125 -4.953125 1.703125 -5.25 C 1.703125 -5.75 1.234375 -5.75 1.078125 -5.75 C 1.390625 -6.234375 2.046875 -6.359375 2.40625 -6.359375 C 2.8125 -6.359375 3.359375 -6.140625 3.359375 -5.25 C 3.359375 -5.125 3.328125 -4.546875 3.078125 -4.125 C 2.78125 -3.640625 2.4375 -3.609375 2.1875 -3.609375 C 2.109375 -3.59375 1.875 -3.578125 1.8125 -3.578125 C 1.71875 -3.5625 1.65625 -3.546875 1.65625 -3.453125 C 1.65625 -3.34375 1.71875 -3.34375 1.890625 -3.34375 L 2.328125 -3.34375 C 3.140625 -3.34375 3.515625 -2.671875 3.515625 -1.703125 C 3.515625 -0.34375 2.828125 -0.0625 2.390625 -0.0625 C 1.96875 -0.0625 1.21875 -0.234375 0.875 -0.8125 C 1.21875 -0.765625 1.53125 -0.984375 1.53125 -1.359375 C 1.53125 -1.71875 1.265625 -1.921875 0.96875 -1.921875 C 0.734375 -1.921875 0.421875 -1.78125 0.421875 -1.34375 C 0.421875 -0.4375 1.34375 0.21875 2.421875 0.21875 C 3.625 0.21875 4.53125 -0.6875 4.53125 -1.703125 C 4.53125 -2.515625 3.90625 -3.28125 2.875 -3.5 Z M 2.875 -3.5 "/>
+</g>
+<g id="f1_glyph-1-2">
+<path d="M 4.453125 -2 C 4.453125 -3.171875 3.640625 -4.171875 2.5625 -4.171875 C 2.09375 -4.171875 1.671875 -4.015625 1.3125 -3.65625 L 1.3125 -5.59375 C 1.515625 -5.53125 1.828125 -5.46875 2.15625 -5.46875 C 3.375 -5.46875 4.0625 -6.375 4.0625 -6.5 C 4.0625 -6.5625 4.03125 -6.609375 3.96875 -6.609375 C 3.953125 -6.609375 3.9375 -6.609375 3.890625 -6.578125 C 3.6875 -6.484375 3.203125 -6.296875 2.546875 -6.296875 C 2.140625 -6.296875 1.6875 -6.359375 1.21875 -6.5625 C 1.140625 -6.59375 1.125 -6.59375 1.09375 -6.59375 C 1 -6.59375 1 -6.515625 1 -6.359375 L 1 -3.421875 C 1 -3.25 1 -3.171875 1.140625 -3.171875 C 1.203125 -3.171875 1.234375 -3.1875 1.265625 -3.25 C 1.375 -3.40625 1.75 -3.953125 2.546875 -3.953125 C 3.0625 -3.953125 3.3125 -3.5 3.390625 -3.3125 C 3.546875 -2.953125 3.578125 -2.5625 3.578125 -2.0625 C 3.578125 -1.71875 3.578125 -1.125 3.328125 -0.703125 C 3.09375 -0.3125 2.734375 -0.0625 2.265625 -0.0625 C 1.546875 -0.0625 0.984375 -0.578125 0.8125 -1.171875 C 0.84375 -1.15625 0.875 -1.15625 0.984375 -1.15625 C 1.3125 -1.15625 1.484375 -1.40625 1.484375 -1.640625 C 1.484375 -1.875 1.3125 -2.125 0.984375 -2.125 C 0.84375 -2.125 0.5 -2.046875 0.5 -1.59375 C 0.5 -0.75 1.1875 0.21875 2.296875 0.21875 C 3.4375 0.21875 4.453125 -0.734375 4.453125 -2 Z M 4.453125 -2 "/>
+</g>
+<g id="f1_glyph-1-3">
+<path d="M 1.3125 -3.25 L 1.3125 -3.5 C 1.3125 -6 2.546875 -6.359375 3.046875 -6.359375 C 3.28125 -6.359375 3.703125 -6.296875 3.921875 -5.96875 C 3.765625 -5.96875 3.375 -5.96875 3.375 -5.515625 C 3.375 -5.203125 3.609375 -5.0625 3.828125 -5.0625 C 3.984375 -5.0625 4.28125 -5.15625 4.28125 -5.53125 C 4.28125 -6.125 3.84375 -6.609375 3.03125 -6.609375 C 1.75 -6.609375 0.421875 -5.328125 0.421875 -3.140625 C 0.421875 -0.484375 1.5625 0.21875 2.484375 0.21875 C 3.59375 0.21875 4.53125 -0.71875 4.53125 -2.03125 C 4.53125 -3.28125 3.65625 -4.234375 2.546875 -4.234375 C 1.875 -4.234375 1.515625 -3.734375 1.3125 -3.25 Z M 2.484375 -0.0625 C 1.859375 -0.0625 1.5625 -0.65625 1.515625 -0.796875 C 1.328125 -1.265625 1.328125 -2.0625 1.328125 -2.25 C 1.328125 -3.015625 1.640625 -4.015625 2.546875 -4.015625 C 2.703125 -4.015625 3.15625 -4.015625 3.46875 -3.390625 C 3.640625 -3.03125 3.640625 -2.515625 3.640625 -2.03125 C 3.640625 -1.5625 3.640625 -1.0625 3.46875 -0.703125 C 3.171875 -0.109375 2.71875 -0.0625 2.484375 -0.0625 Z M 2.484375 -0.0625 "/>
+</g>
+</g>
+<clipPath id="f1_clip-0">
+<path clip-rule="nonzero" d="M 18.84375 65 L 48 65 L 48 150.03125 L 18.84375 150.03125 Z M 18.84375 65 "/>
+</clipPath>
+<clipPath id="f1_clip-1">
+<path clip-rule="nonzero" d="M 18.84375 22 L 90 22 L 90 150.03125 L 18.84375 150.03125 Z M 18.84375 22 "/>
+</clipPath>
+</defs>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M -14.171641 0.000433003 L 83.047969 0.000433003 " transform="matrix(0.995129, 0, 0, -0.995129, 18.844805, 150.031681)"/>
+<path fill-rule="nonzero" fill="rgb(0%, 0%, 0%)" fill-opacity="1" d="M 103.472656 150.03125 L 100.296875 148.445312 L 101.488281 150.03125 L 100.296875 151.617188 "/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f1_glyph-0-0" x="6.927135" y="160.886553"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f1_glyph-0-1" x="101.680372" y="145.95165"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M -0.00105975 -14.174074 L -0.00105975 139.739639 " transform="matrix(0.995129, 0, 0, -0.995129, 18.844805, 150.031681)"/>
+<path fill-rule="nonzero" fill="rgb(0%, 0%, 0%)" fill-opacity="1" d="M 18.84375 8.988281 L 17.257812 12.160156 L 18.84375 10.972656 L 20.429688 12.160156 "/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f1_glyph-0-2" x="9.604033" y="11.124552"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 28.347954 0.997477 L 28.347954 -0.996611 " transform="matrix(0.995129, 0, 0, -0.995129, 18.844805, 150.031681)"/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f1_glyph-1-0" x="44.574871" y="161.492586"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 42.518536 0.997477 L 42.518536 -0.996611 " transform="matrix(0.995129, 0, 0, -0.995129, 18.844805, 150.031681)"/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f1_glyph-1-1" x="58.67884" y="161.492586"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 70.86755 0.997477 L 70.86755 -0.996611 " transform="matrix(0.995129, 0, 0, -0.995129, 18.844805, 150.031681)"/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f1_glyph-1-2" x="86.887773" y="161.492586"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 0.995984 85.039624 L -0.998103 85.039624 " transform="matrix(0.995129, 0, 0, -0.995129, 18.844805, 150.031681)"/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f1_glyph-1-3" x="8.816886" y="68.601236"/>
+</g>
+<g clip-path="url(#f1_clip-0)">
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 28.347954 85.039624 C 28.347954 85.039624 15.731819 0.000433003 -0.00105975 0.000433003 C -15.733938 0.000433003 -28.346148 85.039624 -28.346148 85.039624 " transform="matrix(0.995129, 0, 0, -0.995129, 18.844805, 150.031681)"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 28.347954 85.039624 L 42.518536 127.559219 L 70.86755 127.559219 " transform="matrix(0.995129, 0, 0, -0.995129, 18.844805, 150.031681)"/>
+<g clip-path="url(#f1_clip-1)">
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-dasharray="2.98883 2.98883" stroke-miterlimit="10" d="M 28.347954 0.000433003 L 28.347954 85.039624 L -0.00105975 85.039624 M 42.518536 0.000433003 L 42.518536 127.559219 L -0.00105975 127.559219 M 70.86755 0.000433003 L 70.86755 127.559219 " transform="matrix(0.995129, 0, 0, -0.995129, 18.844805, 150.031681)"/>
+</g>
+</svg></div></div></div></div></div><div class="options"><div class="short-ans-group"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_3_1" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_3_2')" onkeydown="movePrev(event, this, null)"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_3_2" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_3_3')" onkeydown="movePrev(event, this, 'P3_Cau_3_1')"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_3_3" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_3_4')" onkeydown="movePrev(event, this, 'P3_Cau_3_2')"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_3_4" oninput="this.value=this.value.replace('.', ','); moveNext(this, null)" onkeydown="movePrev(event, this, 'P3_Cau_3_3')"></div></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Đổi $360$ km/h $= 100$ m/s (tương ứng tung độ $y=10$).<br> Đồ thị cho thấy tại $t=2$, $y=6$ (tức $v=60$ m/s); tại $t=3$, $y=10$ (tức $v=100$ m/s).<br> Hàm vận tốc: <ul><li>$0 \le t \le 2$: $v(t)=at^2$. Qua $(2,60) \Rightarrow 60=4a \Rightarrow a=15$. $v(t)=15t^2$.</li><li>$2 \le t \le 3$: đường thẳng qua $(2,60)$ và $(3,100)$. $v(t)=40t-20$.</li><li>$3 \le t \le 5$: $v(t)=100$.</li></ul> Tổng quãng đường: $\displaystyle\int_0^2 15t^2 \mathrm{d}t + \displaystyle\int_2^3 (40t-20) \mathrm{d}t + \displaystyle\int_3^5 100 \mathrm{d}t = 40 + 80 + 200 = 320$ (m).</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 4:</b> Một chất điểm chuyển động theo quy luật vận tốc $v(t)$ (m/s) có đồ thị như hình vẽ, theo cung đường từ $A$ đến $B$ với vận tốc bắt đầu bằng $9$ (m/s), đến $C$ và dừng lại tại $D$. Quãng đường chất điểm đi được từ khi bắt đầu đến khi dừng lại là bao nhiêu mét (<i>làm tròn kết quả đến chữ số thập phân thứ nhất</i>)?</div><div class="tp"><div class="center"><div class="tp"><div class="table-responsive figure" style="text-align:center;margin:10px 0"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="236.161" height="184.893" viewBox="0 0 236.161 184.893">
+<defs>
+<g>
+<g id="f2_glyph-0-0">
+<path d="M 2.046875 -3.96875 L 2.96875 -3.96875 C 3.171875 -3.96875 3.28125 -3.96875 3.28125 -4.171875 C 3.28125 -4.28125 3.171875 -4.28125 3 -4.28125 L 2.125 -4.28125 C 2.484375 -5.6875 2.53125 -5.890625 2.53125 -5.9375 C 2.53125 -6.109375 2.40625 -6.21875 2.25 -6.21875 C 2.21875 -6.21875 1.9375 -6.203125 1.84375 -5.859375 L 1.453125 -4.28125 L 0.53125 -4.28125 C 0.328125 -4.28125 0.234375 -4.28125 0.234375 -4.09375 C 0.234375 -3.96875 0.3125 -3.96875 0.5 -3.96875 L 1.375 -3.96875 C 0.671875 -1.15625 0.625 -0.984375 0.625 -0.796875 C 0.625 -0.265625 1 0.109375 1.53125 0.109375 C 2.546875 0.109375 3.109375 -1.34375 3.109375 -1.421875 C 3.109375 -1.515625 3.03125 -1.515625 3 -1.515625 C 2.90625 -1.515625 2.890625 -1.484375 2.84375 -1.375 C 2.421875 -0.34375 1.890625 -0.109375 1.5625 -0.109375 C 1.34375 -0.109375 1.25 -0.234375 1.25 -0.5625 C 1.25 -0.796875 1.265625 -0.875 1.3125 -1.046875 Z M 2.046875 -3.96875 "/>
+</g>
+<g id="f2_glyph-0-1">
+<path d="M 4.640625 -3.6875 C 4.640625 -4.234375 4.390625 -4.390625 4.203125 -4.390625 C 3.953125 -4.390625 3.71875 -4.125 3.71875 -3.90625 C 3.71875 -3.78125 3.765625 -3.71875 3.875 -3.609375 C 4.09375 -3.40625 4.21875 -3.15625 4.21875 -2.796875 C 4.21875 -2.375 3.609375 -0.109375 2.453125 -0.109375 C 1.9375 -0.109375 1.71875 -0.453125 1.71875 -0.96875 C 1.71875 -1.53125 1.984375 -2.25 2.296875 -3.078125 C 2.359375 -3.25 2.40625 -3.390625 2.40625 -3.578125 C 2.40625 -4.015625 2.09375 -4.390625 1.59375 -4.390625 C 0.671875 -4.390625 0.28125 -2.953125 0.28125 -2.859375 C 0.28125 -2.765625 0.390625 -2.765625 0.40625 -2.765625 C 0.5 -2.765625 0.515625 -2.78125 0.5625 -2.9375 C 0.859375 -3.9375 1.28125 -4.171875 1.5625 -4.171875 C 1.640625 -4.171875 1.8125 -4.171875 1.8125 -3.84375 C 1.8125 -3.609375 1.71875 -3.328125 1.640625 -3.15625 C 1.203125 -2 1.078125 -1.546875 1.078125 -1.125 C 1.078125 -0.046875 1.953125 0.109375 2.40625 0.109375 C 4.078125 0.109375 4.640625 -3.171875 4.640625 -3.6875 Z M 4.640625 -3.6875 "/>
+</g>
+<g id="f2_glyph-1-0">
+<path d="M 3.28125 2.375 C 3.28125 2.34375 3.28125 2.328125 3.109375 2.15625 C 1.875 0.90625 1.5625 -0.96875 1.5625 -2.484375 C 1.5625 -4.203125 1.9375 -5.9375 3.15625 -7.171875 C 3.28125 -7.296875 3.28125 -7.3125 3.28125 -7.34375 C 3.28125 -7.40625 3.25 -7.4375 3.1875 -7.4375 C 3.078125 -7.4375 2.1875 -6.765625 1.609375 -5.5 C 1.09375 -4.421875 0.984375 -3.3125 0.984375 -2.484375 C 0.984375 -1.703125 1.09375 -0.5 1.640625 0.609375 C 2.234375 1.828125 3.078125 2.484375 3.1875 2.484375 C 3.25 2.484375 3.28125 2.453125 3.28125 2.375 Z M 3.28125 2.375 "/>
+</g>
+<g id="f2_glyph-1-1">
+<path d="M 2.875 -2.484375 C 2.875 -3.25 2.765625 -4.453125 2.21875 -5.578125 C 1.625 -6.796875 0.765625 -7.4375 0.671875 -7.4375 C 0.609375 -7.4375 0.5625 -7.40625 0.5625 -7.34375 C 0.5625 -7.3125 0.5625 -7.296875 0.75 -7.109375 C 1.71875 -6.125 2.296875 -4.546875 2.296875 -2.484375 C 2.296875 -0.78125 1.921875 0.96875 0.6875 2.21875 C 0.5625 2.328125 0.5625 2.34375 0.5625 2.375 C 0.5625 2.4375 0.609375 2.484375 0.671875 2.484375 C 0.765625 2.484375 1.65625 1.8125 2.25 0.546875 C 2.75 -0.546875 2.875 -1.640625 2.875 -2.484375 Z M 2.875 -2.484375 "/>
+</g>
+<g id="f2_glyph-1-2">
+<path d="M 6.8125 -3.25 C 6.96875 -3.25 7.15625 -3.25 7.15625 -3.4375 C 7.15625 -3.640625 6.96875 -3.640625 6.828125 -3.640625 L 0.890625 -3.640625 C 0.75 -3.640625 0.5625 -3.640625 0.5625 -3.4375 C 0.5625 -3.25 0.75 -3.25 0.890625 -3.25 Z M 6.828125 -1.3125 C 6.96875 -1.3125 7.15625 -1.3125 7.15625 -1.515625 C 7.15625 -1.71875 6.96875 -1.71875 6.8125 -1.71875 L 0.890625 -1.71875 C 0.75 -1.71875 0.5625 -1.71875 0.5625 -1.515625 C 0.5625 -1.3125 0.75 -1.3125 0.890625 -1.3125 Z M 6.828125 -1.3125 "/>
+</g>
+<g id="f2_glyph-1-3">
+<path d="M 3.640625 -3.15625 L 3.640625 -2.84375 C 3.640625 -0.515625 2.609375 -0.0625 2.03125 -0.0625 C 1.859375 -0.0625 1.328125 -0.078125 1.0625 -0.421875 C 1.5 -0.421875 1.578125 -0.703125 1.578125 -0.875 C 1.578125 -1.1875 1.34375 -1.328125 1.125 -1.328125 C 0.96875 -1.328125 0.671875 -1.234375 0.671875 -0.859375 C 0.671875 -0.1875 1.203125 0.21875 2.046875 0.21875 C 3.328125 0.21875 4.53125 -1.125 4.53125 -3.265625 C 4.53125 -5.9375 3.390625 -6.609375 2.515625 -6.609375 C 1.96875 -6.609375 1.484375 -6.421875 1.046875 -5.984375 C 0.640625 -5.53125 0.421875 -5.125 0.421875 -4.375 C 0.421875 -3.140625 1.296875 -2.15625 2.40625 -2.15625 C 3 -2.15625 3.40625 -2.578125 3.640625 -3.15625 Z M 2.40625 -2.390625 C 2.25 -2.390625 1.796875 -2.390625 1.484375 -3.015625 C 1.3125 -3.390625 1.3125 -3.875 1.3125 -4.359375 C 1.3125 -4.90625 1.3125 -5.375 1.515625 -5.734375 C 1.78125 -6.234375 2.15625 -6.359375 2.515625 -6.359375 C 2.96875 -6.359375 3.296875 -6.015625 3.46875 -5.578125 C 3.578125 -5.265625 3.625 -4.640625 3.625 -4.171875 C 3.625 -3.359375 3.28125 -2.390625 2.40625 -2.390625 Z M 2.40625 -2.390625 "/>
+</g>
+<g id="f2_glyph-1-4">
+<path d="M 2.921875 -6.34375 C 2.921875 -6.59375 2.921875 -6.609375 2.6875 -6.609375 C 2.078125 -5.96875 1.203125 -5.96875 0.890625 -5.96875 L 0.890625 -5.671875 C 1.078125 -5.671875 1.671875 -5.671875 2.1875 -5.921875 L 2.1875 -0.78125 C 2.1875 -0.421875 2.15625 -0.3125 1.265625 -0.3125 L 0.9375 -0.3125 L 0.9375 0 C 1.296875 -0.03125 2.15625 -0.03125 2.546875 -0.03125 C 2.953125 -0.03125 3.8125 -0.03125 4.15625 0 L 4.15625 -0.3125 L 3.84375 -0.3125 C 2.953125 -0.3125 2.921875 -0.421875 2.921875 -0.78125 Z M 2.921875 -6.34375 "/>
+</g>
+<g id="f2_glyph-1-5">
+<path d="M 4.5625 -3.171875 C 4.5625 -3.96875 4.515625 -4.765625 4.171875 -5.5 C 3.703125 -6.453125 2.890625 -6.609375 2.484375 -6.609375 C 1.890625 -6.609375 1.15625 -6.34375 0.75 -5.421875 C 0.4375 -4.75 0.390625 -3.96875 0.390625 -3.171875 C 0.390625 -2.4375 0.421875 -1.53125 0.828125 -0.78125 C 1.265625 0.015625 1.984375 0.21875 2.46875 0.21875 C 3 0.21875 3.765625 0.015625 4.203125 -0.9375 C 4.515625 -1.625 4.5625 -2.390625 4.5625 -3.171875 Z M 2.46875 0 C 2.078125 0 1.5 -0.25 1.3125 -1.203125 C 1.203125 -1.796875 1.203125 -2.703125 1.203125 -3.296875 C 1.203125 -3.921875 1.203125 -4.578125 1.296875 -5.125 C 1.484375 -6.296875 2.21875 -6.390625 2.46875 -6.390625 C 2.796875 -6.390625 3.453125 -6.21875 3.640625 -5.234375 C 3.734375 -4.671875 3.734375 -3.921875 3.734375 -3.296875 C 3.734375 -2.546875 3.734375 -1.875 3.625 -1.234375 C 3.484375 -0.296875 2.921875 0 2.46875 0 Z M 2.46875 0 "/>
+</g>
+<g id="f2_glyph-1-6">
+<path d="M 4.0625 -2.28125 L 6.828125 -2.28125 C 6.96875 -2.28125 7.15625 -2.28125 7.15625 -2.484375 C 7.15625 -2.671875 6.96875 -2.671875 6.828125 -2.671875 L 4.0625 -2.671875 L 4.0625 -5.453125 C 4.0625 -5.59375 4.0625 -5.78125 3.859375 -5.78125 C 3.65625 -5.78125 3.65625 -5.59375 3.65625 -5.453125 L 3.65625 -2.671875 L 0.890625 -2.671875 C 0.75 -2.671875 0.5625 -2.671875 0.5625 -2.484375 C 0.5625 -2.28125 0.75 -2.28125 0.890625 -2.28125 L 3.65625 -2.28125 L 3.65625 0.5 C 3.65625 0.640625 3.65625 0.828125 3.859375 0.828125 C 4.0625 0.828125 4.0625 0.640625 4.0625 0.5 Z M 4.0625 -2.28125 "/>
+</g>
+<g id="f2_glyph-1-7">
+<path d="M 1.265625 -0.765625 L 2.3125 -1.78125 C 3.859375 -3.15625 4.453125 -3.6875 4.453125 -4.6875 C 4.453125 -5.8125 3.5625 -6.609375 2.34375 -6.609375 C 1.234375 -6.609375 0.5 -5.6875 0.5 -4.8125 C 0.5 -4.25 0.984375 -4.25 1.015625 -4.25 C 1.1875 -4.25 1.53125 -4.375 1.53125 -4.78125 C 1.53125 -5.046875 1.359375 -5.296875 1.015625 -5.296875 C 0.9375 -5.296875 0.90625 -5.296875 0.890625 -5.28125 C 1.109375 -5.9375 1.640625 -6.296875 2.21875 -6.296875 C 3.125 -6.296875 3.546875 -5.5 3.546875 -4.6875 C 3.546875 -3.890625 3.0625 -3.109375 2.515625 -2.484375 L 0.609375 -0.359375 C 0.5 -0.265625 0.5 -0.234375 0.5 0 L 4.171875 0 L 4.453125 -1.71875 L 4.203125 -1.71875 C 4.15625 -1.421875 4.09375 -0.984375 3.984375 -0.84375 C 3.921875 -0.765625 3.265625 -0.765625 3.046875 -0.765625 Z M 1.265625 -0.765625 "/>
+</g>
+<g id="f2_glyph-1-8">
+<path d="M 4.453125 -2 C 4.453125 -3.171875 3.640625 -4.171875 2.5625 -4.171875 C 2.09375 -4.171875 1.671875 -4.015625 1.3125 -3.65625 L 1.3125 -5.59375 C 1.515625 -5.53125 1.828125 -5.46875 2.15625 -5.46875 C 3.375 -5.46875 4.0625 -6.375 4.0625 -6.5 C 4.0625 -6.5625 4.03125 -6.609375 3.96875 -6.609375 C 3.953125 -6.609375 3.9375 -6.609375 3.890625 -6.578125 C 3.6875 -6.484375 3.203125 -6.296875 2.546875 -6.296875 C 2.140625 -6.296875 1.6875 -6.359375 1.21875 -6.5625 C 1.140625 -6.59375 1.125 -6.59375 1.09375 -6.59375 C 1 -6.59375 1 -6.515625 1 -6.359375 L 1 -3.421875 C 1 -3.25 1 -3.171875 1.140625 -3.171875 C 1.203125 -3.171875 1.234375 -3.1875 1.265625 -3.25 C 1.375 -3.40625 1.75 -3.953125 2.546875 -3.953125 C 3.0625 -3.953125 3.3125 -3.5 3.390625 -3.3125 C 3.546875 -2.953125 3.578125 -2.5625 3.578125 -2.0625 C 3.578125 -1.71875 3.578125 -1.125 3.328125 -0.703125 C 3.09375 -0.3125 2.734375 -0.0625 2.265625 -0.0625 C 1.546875 -0.0625 0.984375 -0.578125 0.8125 -1.171875 C 0.84375 -1.15625 0.875 -1.15625 0.984375 -1.15625 C 1.3125 -1.15625 1.484375 -1.40625 1.484375 -1.640625 C 1.484375 -1.875 1.3125 -2.125 0.984375 -2.125 C 0.84375 -2.125 0.5 -2.046875 0.5 -1.59375 C 0.5 -0.75 1.1875 0.21875 2.296875 0.21875 C 3.4375 0.21875 4.453125 -0.734375 4.453125 -2 Z M 4.453125 -2 "/>
+</g>
+<g id="f2_glyph-1-9">
+<path d="M 2.921875 -1.640625 L 2.921875 -0.78125 C 2.921875 -0.421875 2.890625 -0.3125 2.15625 -0.3125 L 1.953125 -0.3125 L 1.953125 0 C 2.359375 -0.03125 2.875 -0.03125 3.296875 -0.03125 C 3.703125 -0.03125 4.234375 -0.03125 4.640625 0 L 4.640625 -0.3125 L 4.4375 -0.3125 C 3.703125 -0.3125 3.6875 -0.421875 3.6875 -0.78125 L 3.6875 -1.640625 L 4.671875 -1.640625 L 4.671875 -1.9375 L 3.6875 -1.9375 L 3.6875 -6.453125 C 3.6875 -6.65625 3.6875 -6.71875 3.515625 -6.71875 C 3.4375 -6.71875 3.40625 -6.71875 3.328125 -6.59375 L 0.28125 -1.9375 L 0.28125 -1.640625 Z M 2.96875 -1.9375 L 0.5625 -1.9375 L 2.96875 -5.640625 Z M 2.96875 -1.9375 "/>
+</g>
+<g id="f2_glyph-1-10">
+<path d="M 2.875 -3.5 C 3.6875 -3.765625 4.265625 -4.453125 4.265625 -5.234375 C 4.265625 -6.046875 3.390625 -6.609375 2.4375 -6.609375 C 1.4375 -6.609375 0.6875 -6.015625 0.6875 -5.265625 C 0.6875 -4.9375 0.90625 -4.75 1.1875 -4.75 C 1.5 -4.75 1.703125 -4.953125 1.703125 -5.25 C 1.703125 -5.75 1.234375 -5.75 1.078125 -5.75 C 1.390625 -6.234375 2.046875 -6.359375 2.40625 -6.359375 C 2.8125 -6.359375 3.359375 -6.140625 3.359375 -5.25 C 3.359375 -5.125 3.328125 -4.546875 3.078125 -4.125 C 2.78125 -3.640625 2.4375 -3.609375 2.1875 -3.609375 C 2.109375 -3.59375 1.875 -3.578125 1.8125 -3.578125 C 1.71875 -3.5625 1.65625 -3.546875 1.65625 -3.453125 C 1.65625 -3.34375 1.71875 -3.34375 1.890625 -3.34375 L 2.328125 -3.34375 C 3.140625 -3.34375 3.515625 -2.671875 3.515625 -1.703125 C 3.515625 -0.34375 2.828125 -0.0625 2.390625 -0.0625 C 1.96875 -0.0625 1.21875 -0.234375 0.875 -0.8125 C 1.21875 -0.765625 1.53125 -0.984375 1.53125 -1.359375 C 1.53125 -1.71875 1.265625 -1.921875 0.96875 -1.921875 C 0.734375 -1.921875 0.421875 -1.78125 0.421875 -1.34375 C 0.421875 -0.4375 1.34375 0.21875 2.421875 0.21875 C 3.625 0.21875 4.53125 -0.6875 4.53125 -1.703125 C 4.53125 -2.515625 3.90625 -3.28125 2.875 -3.5 Z M 2.875 -3.5 "/>
+</g>
+<g id="f2_glyph-2-0">
+<path d="M 2.328125 -4.421875 C 2.328125 -4.609375 2.3125 -4.609375 2.125 -4.609375 C 1.671875 -4.171875 1.046875 -4.171875 0.765625 -4.171875 L 0.765625 -3.921875 C 0.921875 -3.921875 1.390625 -3.921875 1.765625 -4.109375 L 1.765625 -0.5625 C 1.765625 -0.34375 1.765625 -0.25 1.078125 -0.25 L 0.8125 -0.25 L 0.8125 0 C 0.9375 0 1.78125 -0.03125 2.046875 -0.03125 C 2.265625 -0.03125 3.140625 0 3.28125 0 L 3.28125 -0.25 L 3.03125 -0.25 C 2.328125 -0.25 2.328125 -0.34375 2.328125 -0.5625 Z M 2.328125 -4.421875 "/>
+</g>
+<g id="f2_glyph-2-1">
+<path d="M 3.515625 -1.265625 L 3.28125 -1.265625 C 3.25 -1.109375 3.1875 -0.703125 3.09375 -0.625 C 3.03125 -0.59375 2.5 -0.59375 2.40625 -0.59375 L 1.125 -0.59375 C 1.859375 -1.234375 2.09375 -1.4375 2.515625 -1.765625 C 3.03125 -2.171875 3.515625 -2.59375 3.515625 -3.265625 C 3.515625 -4.109375 2.78125 -4.609375 1.890625 -4.609375 C 1.015625 -4.609375 0.4375 -4.015625 0.4375 -3.375 C 0.4375 -3.015625 0.734375 -2.984375 0.8125 -2.984375 C 0.96875 -2.984375 1.171875 -3.09375 1.171875 -3.34375 C 1.171875 -3.484375 1.125 -3.71875 0.765625 -3.71875 C 0.984375 -4.21875 1.453125 -4.359375 1.78125 -4.359375 C 2.46875 -4.359375 2.84375 -3.828125 2.84375 -3.265625 C 2.84375 -2.65625 2.40625 -2.171875 2.1875 -1.921875 L 0.5 -0.265625 C 0.4375 -0.203125 0.4375 -0.1875 0.4375 0 L 3.296875 0 Z M 3.515625 -1.265625 "/>
+</g>
+<g id="f2_glyph-2-2">
+<path d="M 1.890625 -2.328125 C 2.4375 -2.328125 2.828125 -1.953125 2.828125 -1.203125 C 2.828125 -0.34375 2.328125 -0.078125 1.921875 -0.078125 C 1.640625 -0.078125 1.03125 -0.15625 0.75 -0.5625 C 1.078125 -0.578125 1.140625 -0.8125 1.140625 -0.953125 C 1.140625 -1.1875 0.984375 -1.34375 0.765625 -1.34375 C 0.5625 -1.34375 0.375 -1.21875 0.375 -0.9375 C 0.375 -0.28125 1.09375 0.140625 1.9375 0.140625 C 2.90625 0.140625 3.578125 -0.5 3.578125 -1.203125 C 3.578125 -1.75 3.125 -2.28125 2.359375 -2.453125 C 3.09375 -2.71875 3.359375 -3.234375 3.359375 -3.65625 C 3.359375 -4.203125 2.71875 -4.609375 1.953125 -4.609375 C 1.1875 -4.609375 0.59375 -4.234375 0.59375 -3.6875 C 0.59375 -3.453125 0.75 -3.3125 0.953125 -3.3125 C 1.171875 -3.3125 1.3125 -3.484375 1.3125 -3.671875 C 1.3125 -3.875 1.171875 -4.015625 0.953125 -4.03125 C 1.203125 -4.34375 1.671875 -4.421875 1.9375 -4.421875 C 2.25 -4.421875 2.6875 -4.265625 2.6875 -3.65625 C 2.6875 -3.359375 2.59375 -3.046875 2.40625 -2.828125 C 2.171875 -2.5625 1.984375 -2.546875 1.640625 -2.53125 C 1.453125 -2.515625 1.453125 -2.515625 1.40625 -2.515625 C 1.390625 -2.515625 1.34375 -2.5 1.34375 -2.421875 C 1.34375 -2.328125 1.40625 -2.328125 1.515625 -2.328125 Z M 1.890625 -2.328125 "/>
+</g>
+<g id="f2_glyph-3-0">
+<path d="M 6.53125 -2.28125 C 6.703125 -2.28125 6.890625 -2.28125 6.890625 -2.484375 C 6.890625 -2.671875 6.703125 -2.671875 6.53125 -2.671875 L 1.171875 -2.671875 C 1 -2.671875 0.828125 -2.671875 0.828125 -2.484375 C 0.828125 -2.28125 1 -2.28125 1.171875 -2.28125 Z M 6.53125 -2.28125 "/>
+</g>
+</g>
+</defs>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 0.00121576 -0.00101825 L 168.088446 -0.00101825 " transform="matrix(0.99646, 0, 0, -0.99646, 27.42457, 167.456017)"/>
+<path fill-rule="nonzero" fill="rgb(0%, 0%, 0%)" fill-opacity="1" d="M 196.902344 167.457031 L 193.726562 165.867188 L 194.917969 167.457031 L 193.726562 169.042969 "/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-0-0" x="195.108844" y="177.647809"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 0.00121576 -0.00101825 L 0.00121576 153.914951 " transform="matrix(0.99646, 0, 0, -0.99646, 27.42457, 167.456017)"/>
+<path fill-rule="nonzero" fill="rgb(0%, 0%, 0%)" fill-opacity="1" d="M 27.425781 12.101562 L 25.835938 15.277344 L 27.425781 14.085938 L 29.011719 15.277344 "/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-0-1" x="6.864612" y="14.584119"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-0" x="12.033774" y="14.584119"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-0-0" x="15.894513" y="14.584119"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-1" x="19.479273" y="14.584119"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 0.00121576 127.559933 C 0.00121576 127.559933 0.851883 127.559933 1.181174 127.559933 C 1.510465 127.559933 2.035762 127.559933 2.361133 127.559933 C 2.690423 127.559933 3.21572 127.559933 3.545011 127.559933 C 3.870382 127.559933 4.395679 127.559933 4.724969 127.559933 C 5.05034 127.559933 5.575637 127.559933 5.904928 127.559933 C 6.234219 127.559933 6.759516 127.559933 7.084886 127.559933 C 7.414177 127.559933 7.939474 127.559933 8.268765 127.559933 C 8.594135 127.559933 9.119433 127.559933 9.448723 127.559933 C 9.778014 127.559933 10.303311 127.559933 10.628682 127.559933 C 10.957972 127.559933 11.483269 127.559933 11.80864 127.559933 C 12.137931 127.559933 12.663228 127.559933 12.992519 127.559933 C 13.317889 127.559933 13.843186 127.559933 14.172477 127.559933 C 14.501768 127.559933 15.027065 127.559933 15.352435 127.559933 C 15.681726 127.559933 16.207023 127.559933 16.536314 127.559933 C 16.861684 127.559933 17.386982 127.559933 17.716272 127.559933 C 18.041643 127.559933 18.57086 127.559933 18.896231 127.559933 C 19.225521 127.559933 19.750819 127.559933 20.076189 127.559933 C 20.40548 127.559933 20.930777 127.559933 21.260068 127.559933 C 21.585438 127.559933 22.110735 127.559933 22.440026 127.559933 C 22.769317 127.559933 23.294614 127.559933 23.619984 127.559933 C 23.949275 127.559933 24.474572 127.559933 24.803863 127.559933 C 25.129234 127.559933 25.654531 127.559933 25.983821 127.559933 C 26.309192 127.559933 26.834489 127.559933 27.16378 127.559933 C 27.49307 127.559933 28.343738 127.559933 28.343738 127.559933 M 28.347658 127.559933 C 28.347658 127.559933 30.480208 115.035126 31.299514 110.460337 C 32.118821 105.885548 33.432064 98.821478 34.25137 94.58774 C 35.070677 90.354002 36.38392 83.83875 37.203227 79.946064 C 38.022533 76.057297 39.339696 70.086943 40.159003 66.539227 C 40.978309 62.987592 42.291552 57.566055 43.110859 54.355471 C 43.930165 51.148806 45.243408 46.276088 46.062715 43.406554 C 46.882022 40.540941 48.195264 36.21312 49.014571 33.688558 C 49.833878 31.160076 51.15104 27.384993 51.970347 25.197562 C 52.789654 23.014051 54.102897 19.783866 54.922203 17.941406 C 55.74151 16.095026 57.054753 13.413658 57.874059 11.912249 C 58.693366 10.40692 60.006609 8.274371 60.825915 7.114013 C 61.645222 5.949735 62.958465 4.362084 63.777771 3.542777 C 64.597078 2.72347 65.914241 1.684637 66.733548 1.206381 C 67.552854 0.728125 68.866097 0.234189 69.685404 0.0969849 C 70.50471 -0.0402195 71.817953 0.0146623 72.63726 0.222429 C 73.456566 0.426276 74.769809 1.026055 75.589116 1.574873 C 76.408422 2.119771 77.725585 3.268368 78.544892 4.158237 C 79.364199 5.044186 80.677441 6.741601 81.496748 7.972521 C 82.316055 9.199521 83.629297 11.445754 84.448604 13.013805 C 85.267911 14.585776 86.581154 17.376907 87.40046 19.28993 C 88.219767 21.199032 89.53301 24.53898 90.352316 26.793054 C 91.171623 29.047127 92.488786 32.931974 93.308092 35.527098 C 94.127399 38.122222 95.440642 42.555887 96.259949 45.492062 C 97.079255 48.428238 99.211805 56.687947 99.211805 56.687947 M 99.215725 56.691867 C 99.215725 56.691867 100.493686 54.986611 100.983702 54.33195 C 101.477638 53.677289 102.265584 52.622774 102.7556 51.968113 C 103.249536 51.313452 104.037482 50.262858 104.527498 49.608196 C 105.021434 48.949615 105.809379 47.899021 106.299395 47.244359 C 106.793331 46.589698 107.581277 45.539104 108.071293 44.884443 C 108.565229 44.225861 109.353175 43.175267 109.843191 42.520606 C 110.337127 41.865944 111.125072 40.81535 111.615088 40.156769 C 112.109024 39.502107 112.89697 38.451513 113.386986 37.796852 C 113.877002 37.142191 114.668868 36.087676 115.158884 35.433015 C 115.6489 34.778354 116.440765 33.727759 116.930781 33.073098 C 117.420797 32.414517 118.208743 31.363923 118.702679 30.709261 C 119.192695 30.0546 119.980641 29.004006 120.474577 28.345424 C 120.964593 27.690763 121.752538 26.640169 122.246474 25.985507 C 122.73649 25.330846 123.524436 24.276332 124.018372 23.621671 C 124.508388 22.967009 125.296334 21.916415 125.79027 21.261754 C 126.280286 20.603172 127.068231 19.552578 127.562167 18.897917 C 128.052183 18.243256 128.840129 17.192661 129.334065 16.53408 C 129.824081 15.879419 130.612027 14.828824 131.102042 14.174163 C 131.595979 13.519502 132.383924 12.464987 132.87394 11.810326 C 133.367876 11.155665 134.155822 10.105071 134.645838 9.450409 C 135.139774 8.791828 135.92772 7.741234 136.417735 7.086572 C 136.911672 6.431911 137.699617 5.381317 138.189633 4.722735 C 138.683569 4.068074 139.471515 3.01748 139.961531 2.362819 C 140.455467 1.708157 141.733429 -0.00101825 141.733429 -0.00101825 " transform="matrix(0.99646, 0, 0, -0.99646, 27.42457, 167.456017)"/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-0-1" x="24.986232" y="33.780919"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-2-0" x="29.798137" y="35.270627"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-0" x="34.252313" y="33.780919"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-0-0" x="38.113052" y="33.780919"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-1" x="41.697812" y="33.780919"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-2" x="48.318349" y="33.780919"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-3" x="58.789699" y="33.780919"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-0-1" x="32.079034" y="104.396047"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-2-1" x="36.890939" y="105.885755"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-0" x="41.344118" y="104.396047"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-0-0" x="45.204858" y="104.396047"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-1" x="48.789617" y="104.396047"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-2" x="55.410154" y="104.396047"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-0-0" x="65.891431" y="104.396047"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-2-1" x="69.472189" y="100.793845"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-3-0" x="76.13153" y="104.396047"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-4" x="86.056877" y="104.396047"/>
+<use xlink:href="#f2_glyph-1-5" x="91.020542" y="104.396047"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-0-0" x="95.984208" y="104.396047"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-6" x="101.772835" y="104.396047"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-7" x="111.708109" y="104.396047"/>
+<use xlink:href="#f2_glyph-1-8" x="116.671774" y="104.396047"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-0-1" x="151.556571" y="142.362167"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-2-2" x="156.368476" y="143.850878"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-0" x="160.821655" y="142.362167"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-0-0" x="164.682394" y="142.362167"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-1" x="168.267154" y="142.362167"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-2" x="174.887691" y="142.362167"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-3-0" x="185.368968" y="142.362167"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-9" x="194.2768" y="135.646027"/>
+</g>
+<path fill="none" stroke-width="0.398" stroke-linecap="butt" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 0.000545313 0.00108249 L 4.979107 0.00108249 " transform="matrix(0.99646, 0, 0, -0.99646, 194.2768, 139.879985)"/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-10" x="194.2768" y="149.170977"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-0-0" x="200.431933" y="142.362167"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-6" x="206.22056" y="142.362167"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-9" x="217.340862" y="135.646027"/>
+<use xlink:href="#f2_glyph-1-5" x="222.304527" y="135.646027"/>
+</g>
+<path fill="none" stroke-width="0.398" stroke-linecap="butt" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M -0.00102144 0.00108249 L 9.963943 0.00108249 " transform="matrix(0.99646, 0, 0, -0.99646, 217.340862, 139.879985)"/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f2_glyph-1-10" x="219.823043" y="149.170977"/>
+</g>
+</svg></div></div></div></div></div><div class="options"><div class="short-ans-group"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_4_1" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_4_2')" onkeydown="movePrev(event, this, null)"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_4_2" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_4_3')" onkeydown="movePrev(event, this, 'P3_Cau_4_1')"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_4_3" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_4_4')" onkeydown="movePrev(event, this, 'P3_Cau_4_2')"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_4_4" oninput="this.value=this.value.replace('.', ','); moveNext(this, null)" onkeydown="movePrev(event, this, 'P3_Cau_4_3')"></div></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Tìm giao điểm các giai đoạn <ul><li>$v_3(t)=0 \Leftrightarrow t=10$ (dừng lại).</li><li>$v_1(t)=v_2(t) \Leftrightarrow 9=t^2-10t+25 \Rightarrow t=2$.</li><li>$v_2(t)=v_3(t) \Leftrightarrow t^2-10t+25 = -\dfrac{4t}{3}+\dfrac{40}{3}\Rightarrow t=7$.</li></ul> Quãng đường $S = \displaystyle\int_0^2 9\,\mathrm{d}t + \displaystyle\int_2^7 (t^2-10t+25)\,\mathrm{d}t + \displaystyle\int_7^{10} \left(-\dfrac{4t}{3}+\dfrac{40}{3}\right)\,\mathrm{d}t\approx 35{,}7$&thinsp;(m).</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 5:</b> Cho hàm số $f(x)$ liên tục trên đoạn $[-1;6]$ và có đồ thị là đường gấp khúc như hình bên. Biết $F(x)$ là một nguyên hàm của $f(x)$ trên đoạn $[-1;6]$ và thỏa mãn $F(-1)=-2$. Giá trị của $F(4)+F(6)$ bằng bao nhiêu?</div><div class="tp"><div class="center"><div class="tp"><div class="table-responsive figure" style="text-align:center;margin:10px 0"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="217.02" height="103.9" viewBox="0 0 217.02 103.9">
+<defs>
+<g>
+<g id="f3_glyph-0-0">
+<path d="M 7.34375 -4.328125 C 7.34375 -5.921875 6.296875 -7 4.8125 -7 C 2.671875 -7 0.484375 -4.75 0.484375 -2.4375 C 0.484375 -0.78125 1.59375 0.21875 3.03125 0.21875 C 5.125 0.21875 7.34375 -1.953125 7.34375 -4.328125 Z M 3.078125 -0.046875 C 2.109375 -0.046875 1.40625 -0.84375 1.40625 -2.15625 C 1.40625 -2.59375 1.546875 -4.03125 2.3125 -5.203125 C 3 -6.234375 3.96875 -6.75 4.75 -6.75 C 5.5625 -6.75 6.453125 -6.1875 6.453125 -4.71875 C 6.453125 -4 6.1875 -2.453125 5.203125 -1.234375 C 4.734375 -0.625 3.921875 -0.046875 3.078125 -0.046875 Z M 3.078125 -0.046875 "/>
+</g>
+<g id="f3_glyph-0-1">
+<path d="M 3.3125 -3 C 3.375 -3.25 3.609375 -4.171875 4.296875 -4.171875 C 4.34375 -4.171875 4.578125 -4.171875 4.796875 -4.03125 C 4.515625 -3.984375 4.3125 -3.734375 4.3125 -3.5 C 4.3125 -3.34375 4.421875 -3.15625 4.6875 -3.15625 C 4.90625 -3.15625 5.234375 -3.328125 5.234375 -3.734375 C 5.234375 -4.25 4.640625 -4.390625 4.3125 -4.390625 C 3.734375 -4.390625 3.390625 -3.859375 3.265625 -3.625 C 3.015625 -4.28125 2.484375 -4.390625 2.1875 -4.390625 C 1.15625 -4.390625 0.59375 -3.109375 0.59375 -2.859375 C 0.59375 -2.765625 0.6875 -2.765625 0.71875 -2.765625 C 0.796875 -2.765625 0.828125 -2.78125 0.84375 -2.875 C 1.1875 -3.921875 1.828125 -4.171875 2.171875 -4.171875 C 2.359375 -4.171875 2.703125 -4.078125 2.703125 -3.5 C 2.703125 -3.1875 2.546875 -2.53125 2.171875 -1.140625 C 2.015625 -0.53125 1.671875 -0.109375 1.234375 -0.109375 C 1.171875 -0.109375 0.9375 -0.109375 0.734375 -0.234375 C 0.984375 -0.28125 1.203125 -0.5 1.203125 -0.78125 C 1.203125 -1.046875 0.984375 -1.125 0.828125 -1.125 C 0.53125 -1.125 0.28125 -0.859375 0.28125 -0.546875 C 0.28125 -0.09375 0.78125 0.109375 1.21875 0.109375 C 1.875 0.109375 2.234375 -0.578125 2.265625 -0.640625 C 2.375 -0.28125 2.734375 0.109375 3.328125 0.109375 C 4.359375 0.109375 4.921875 -1.171875 4.921875 -1.421875 C 4.921875 -1.515625 4.828125 -1.515625 4.796875 -1.515625 C 4.71875 -1.515625 4.6875 -1.484375 4.671875 -1.40625 C 4.34375 -0.34375 3.671875 -0.109375 3.359375 -0.109375 C 2.96875 -0.109375 2.8125 -0.421875 2.8125 -0.765625 C 2.8125 -0.984375 2.875 -1.203125 2.96875 -1.640625 Z M 3.3125 -3 "/>
+</g>
+<g id="f3_glyph-0-2">
+<path d="M 4.828125 -3.78125 C 4.859375 -3.921875 4.859375 -3.9375 4.859375 -4.015625 C 4.859375 -4.1875 4.71875 -4.28125 4.578125 -4.28125 C 4.46875 -4.28125 4.3125 -4.21875 4.234375 -4.0625 C 4.203125 -4.015625 4.125 -3.703125 4.09375 -3.53125 C 4.015625 -3.28125 3.953125 -3 3.890625 -2.734375 L 3.4375 -0.953125 C 3.40625 -0.796875 2.96875 -0.109375 2.328125 -0.109375 C 1.8125 -0.109375 1.703125 -0.546875 1.703125 -0.90625 C 1.703125 -1.375 1.875 -1.984375 2.21875 -2.859375 C 2.375 -3.265625 2.40625 -3.375 2.40625 -3.578125 C 2.40625 -4.015625 2.09375 -4.390625 1.59375 -4.390625 C 0.65625 -4.390625 0.28125 -2.953125 0.28125 -2.859375 C 0.28125 -2.765625 0.390625 -2.765625 0.40625 -2.765625 C 0.5 -2.765625 0.515625 -2.78125 0.5625 -2.9375 C 0.828125 -3.875 1.234375 -4.171875 1.5625 -4.171875 C 1.640625 -4.171875 1.8125 -4.171875 1.8125 -3.84375 C 1.8125 -3.609375 1.71875 -3.34375 1.640625 -3.15625 C 1.25 -2.109375 1.078125 -1.53125 1.078125 -1.078125 C 1.078125 -0.1875 1.703125 0.109375 2.28125 0.109375 C 2.671875 0.109375 3 -0.0625 3.28125 -0.34375 C 3.15625 0.171875 3.03125 0.671875 2.640625 1.1875 C 2.375 1.53125 2 1.8125 1.546875 1.8125 C 1.40625 1.8125 0.96875 1.78125 0.796875 1.40625 C 0.953125 1.40625 1.078125 1.40625 1.21875 1.28125 C 1.3125 1.1875 1.421875 1.0625 1.421875 0.875 C 1.421875 0.5625 1.15625 0.53125 1.046875 0.53125 C 0.828125 0.53125 0.5 0.6875 0.5 1.171875 C 0.5 1.671875 0.9375 2.03125 1.546875 2.03125 C 2.5625 2.03125 3.59375 1.125 3.875 0.015625 Z M 4.828125 -3.78125 "/>
+</g>
+<g id="f3_glyph-0-3">
+<path d="M 1.78125 -1.140625 C 1.375 -0.46875 0.984375 -0.34375 0.5625 -0.3125 C 0.4375 -0.296875 0.34375 -0.296875 0.34375 -0.109375 C 0.34375 -0.046875 0.390625 0 0.46875 0 C 0.75 0 1.046875 -0.03125 1.328125 -0.03125 C 1.65625 -0.03125 2 0 2.328125 0 C 2.375 0 2.515625 0 2.515625 -0.1875 C 2.515625 -0.296875 2.421875 -0.3125 2.34375 -0.3125 C 2.125 -0.328125 1.890625 -0.40625 1.890625 -0.65625 C 1.890625 -0.78125 1.9375 -0.890625 2.03125 -1.015625 L 2.78125 -2.296875 L 5.265625 -2.296875 C 5.28125 -2.078125 5.421875 -0.734375 5.421875 -0.640625 C 5.421875 -0.34375 4.90625 -0.3125 4.71875 -0.3125 C 4.578125 -0.3125 4.46875 -0.3125 4.46875 -0.109375 C 4.46875 0 4.59375 0 4.609375 0 C 5.015625 0 5.453125 -0.03125 5.859375 -0.03125 C 6.109375 -0.03125 6.734375 0 6.96875 0 C 7.03125 0 7.15625 0 7.15625 -0.203125 C 7.15625 -0.3125 7.046875 -0.3125 6.921875 -0.3125 C 6.3125 -0.3125 6.3125 -0.375 6.28125 -0.671875 L 5.671875 -6.859375 C 5.65625 -7.0625 5.65625 -7.109375 5.484375 -7.109375 C 5.328125 -7.109375 5.28125 -7.03125 5.234375 -6.9375 Z M 2.96875 -2.59375 L 4.921875 -5.875 L 5.234375 -2.59375 Z M 2.96875 -2.59375 "/>
+</g>
+<g id="f3_glyph-0-4">
+<path d="M 1.59375 -0.78125 C 1.484375 -0.390625 1.46875 -0.3125 0.6875 -0.3125 C 0.515625 -0.3125 0.421875 -0.3125 0.421875 -0.109375 C 0.421875 0 0.5 0 0.6875 0 L 4.234375 0 C 5.796875 0 6.96875 -1.171875 6.96875 -2.140625 C 6.96875 -2.859375 6.390625 -3.4375 5.421875 -3.546875 C 6.453125 -3.734375 7.5 -4.46875 7.5 -5.40625 C 7.5 -6.140625 6.84375 -6.78125 5.65625 -6.78125 L 2.328125 -6.78125 C 2.140625 -6.78125 2.03125 -6.78125 2.03125 -6.578125 C 2.03125 -6.46875 2.125 -6.46875 2.3125 -6.46875 C 2.328125 -6.46875 2.515625 -6.46875 2.6875 -6.453125 C 2.875 -6.421875 2.953125 -6.421875 2.953125 -6.296875 C 2.953125 -6.25 2.953125 -6.21875 2.921875 -6.109375 Z M 3.078125 -3.625 L 3.703125 -6.09375 C 3.796875 -6.4375 3.8125 -6.46875 4.234375 -6.46875 L 5.515625 -6.46875 C 6.390625 -6.46875 6.59375 -5.890625 6.59375 -5.453125 C 6.59375 -4.578125 5.75 -3.625 4.53125 -3.625 Z M 2.640625 -0.3125 C 2.5 -0.3125 2.484375 -0.3125 2.421875 -0.3125 C 2.328125 -0.328125 2.296875 -0.34375 2.296875 -0.421875 C 2.296875 -0.453125 2.296875 -0.46875 2.34375 -0.640625 L 3.03125 -3.40625 L 4.90625 -3.40625 C 5.859375 -3.40625 6.046875 -2.671875 6.046875 -2.25 C 6.046875 -1.265625 5.15625 -0.3125 3.984375 -0.3125 Z M 2.640625 -0.3125 "/>
+</g>
+<g id="f3_glyph-0-5">
+<path d="M 7.546875 -6.890625 C 7.546875 -6.921875 7.515625 -7 7.4375 -7 C 7.40625 -7 7.390625 -6.984375 7.28125 -6.875 L 6.59375 -6.109375 C 6.5 -6.25 6.046875 -7 4.9375 -7 C 2.734375 -7 0.5 -4.796875 0.5 -2.5 C 0.5 -0.859375 1.671875 0.21875 3.1875 0.21875 C 4.046875 0.21875 4.796875 -0.171875 5.328125 -0.640625 C 6.25 -1.453125 6.421875 -2.34375 6.421875 -2.375 C 6.421875 -2.484375 6.3125 -2.484375 6.296875 -2.484375 C 6.234375 -2.484375 6.1875 -2.453125 6.171875 -2.375 C 6.078125 -2.09375 5.859375 -1.390625 5.171875 -0.8125 C 4.484375 -0.265625 3.859375 -0.09375 3.34375 -0.09375 C 2.453125 -0.09375 1.40625 -0.609375 1.40625 -2.15625 C 1.40625 -2.71875 1.609375 -4.328125 2.59375 -5.484375 C 3.203125 -6.1875 4.140625 -6.6875 5.015625 -6.6875 C 6.03125 -6.6875 6.625 -5.921875 6.625 -4.765625 C 6.625 -4.375 6.59375 -4.359375 6.59375 -4.265625 C 6.59375 -4.171875 6.703125 -4.171875 6.734375 -4.171875 C 6.859375 -4.171875 6.859375 -4.1875 6.921875 -4.359375 Z M 7.546875 -6.890625 "/>
+</g>
+<g id="f3_glyph-1-0">
+<path d="M 6.53125 -2.28125 C 6.703125 -2.28125 6.890625 -2.28125 6.890625 -2.484375 C 6.890625 -2.671875 6.703125 -2.671875 6.53125 -2.671875 L 1.171875 -2.671875 C 1 -2.671875 0.828125 -2.671875 0.828125 -2.484375 C 0.828125 -2.28125 1 -2.28125 1.171875 -2.28125 Z M 6.53125 -2.28125 "/>
+</g>
+<g id="f3_glyph-2-0">
+<path d="M 2.921875 -6.34375 C 2.921875 -6.59375 2.921875 -6.609375 2.6875 -6.609375 C 2.078125 -5.96875 1.203125 -5.96875 0.890625 -5.96875 L 0.890625 -5.671875 C 1.078125 -5.671875 1.671875 -5.671875 2.1875 -5.921875 L 2.1875 -0.78125 C 2.1875 -0.421875 2.15625 -0.3125 1.265625 -0.3125 L 0.9375 -0.3125 L 0.9375 0 C 1.296875 -0.03125 2.15625 -0.03125 2.546875 -0.03125 C 2.953125 -0.03125 3.8125 -0.03125 4.15625 0 L 4.15625 -0.3125 L 3.84375 -0.3125 C 2.953125 -0.3125 2.921875 -0.421875 2.921875 -0.78125 Z M 2.921875 -6.34375 "/>
+</g>
+<g id="f3_glyph-2-1">
+<path d="M 1.265625 -0.765625 L 2.3125 -1.78125 C 3.859375 -3.15625 4.453125 -3.6875 4.453125 -4.6875 C 4.453125 -5.8125 3.5625 -6.609375 2.34375 -6.609375 C 1.234375 -6.609375 0.5 -5.6875 0.5 -4.8125 C 0.5 -4.25 0.984375 -4.25 1.015625 -4.25 C 1.1875 -4.25 1.53125 -4.375 1.53125 -4.78125 C 1.53125 -5.046875 1.359375 -5.296875 1.015625 -5.296875 C 0.9375 -5.296875 0.90625 -5.296875 0.890625 -5.28125 C 1.109375 -5.9375 1.640625 -6.296875 2.21875 -6.296875 C 3.125 -6.296875 3.546875 -5.5 3.546875 -4.6875 C 3.546875 -3.890625 3.0625 -3.109375 2.515625 -2.484375 L 0.609375 -0.359375 C 0.5 -0.265625 0.5 -0.234375 0.5 0 L 4.171875 0 L 4.453125 -1.71875 L 4.203125 -1.71875 C 4.15625 -1.421875 4.09375 -0.984375 3.984375 -0.84375 C 3.921875 -0.765625 3.265625 -0.765625 3.046875 -0.765625 Z M 1.265625 -0.765625 "/>
+</g>
+<g id="f3_glyph-2-2">
+<path d="M 2.921875 -1.640625 L 2.921875 -0.78125 C 2.921875 -0.421875 2.890625 -0.3125 2.15625 -0.3125 L 1.953125 -0.3125 L 1.953125 0 C 2.359375 -0.03125 2.875 -0.03125 3.296875 -0.03125 C 3.703125 -0.03125 4.234375 -0.03125 4.640625 0 L 4.640625 -0.3125 L 4.4375 -0.3125 C 3.703125 -0.3125 3.6875 -0.421875 3.6875 -0.78125 L 3.6875 -1.640625 L 4.671875 -1.640625 L 4.671875 -1.9375 L 3.6875 -1.9375 L 3.6875 -6.453125 C 3.6875 -6.65625 3.6875 -6.71875 3.515625 -6.71875 C 3.4375 -6.71875 3.40625 -6.71875 3.328125 -6.59375 L 0.28125 -1.9375 L 0.28125 -1.640625 Z M 2.96875 -1.9375 L 0.5625 -1.9375 L 2.96875 -5.640625 Z M 2.96875 -1.9375 "/>
+</g>
+<g id="f3_glyph-2-3">
+<path d="M 1.3125 -3.25 L 1.3125 -3.5 C 1.3125 -6 2.546875 -6.359375 3.046875 -6.359375 C 3.28125 -6.359375 3.703125 -6.296875 3.921875 -5.96875 C 3.765625 -5.96875 3.375 -5.96875 3.375 -5.515625 C 3.375 -5.203125 3.609375 -5.0625 3.828125 -5.0625 C 3.984375 -5.0625 4.28125 -5.15625 4.28125 -5.53125 C 4.28125 -6.125 3.84375 -6.609375 3.03125 -6.609375 C 1.75 -6.609375 0.421875 -5.328125 0.421875 -3.140625 C 0.421875 -0.484375 1.5625 0.21875 2.484375 0.21875 C 3.59375 0.21875 4.53125 -0.71875 4.53125 -2.03125 C 4.53125 -3.28125 3.65625 -4.234375 2.546875 -4.234375 C 1.875 -4.234375 1.515625 -3.734375 1.3125 -3.25 Z M 2.484375 -0.0625 C 1.859375 -0.0625 1.5625 -0.65625 1.515625 -0.796875 C 1.328125 -1.265625 1.328125 -2.0625 1.328125 -2.25 C 1.328125 -3.015625 1.640625 -4.015625 2.546875 -4.015625 C 2.703125 -4.015625 3.15625 -4.015625 3.46875 -3.390625 C 3.640625 -3.03125 3.640625 -2.515625 3.640625 -2.03125 C 3.640625 -1.5625 3.640625 -1.0625 3.46875 -0.703125 C 3.171875 -0.109375 2.71875 -0.0625 2.484375 -0.0625 Z M 2.484375 -0.0625 "/>
+</g>
+</g>
+</defs>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M -45.355802 -0.00106464 L 156.751975 -0.00106464 " transform="matrix(0.995505, 0, 0, -0.995505, 48.323784, 55.291909)"/>
+<path fill-rule="nonzero" fill="rgb(0%, 0%, 0%)" fill-opacity="1" d="M 206.351562 55.292969 L 203.179688 53.703125 L 204.371094 55.292969 L 203.179688 56.878906 "/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-0-0" x="36.402616" y="66.150873"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-0-1" x="203.51598" y="51.211336"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 0.000437045 -45.35338 L 0.000437045 43.361838 " transform="matrix(0.995505, 0, 0, -0.995505, 48.323784, 55.291909)"/>
+<path fill-rule="nonzero" fill="rgb(0%, 0%, 0%)" fill-opacity="1" d="M 48.324219 10.140625 L 46.738281 13.3125 L 48.324219 12.125 L 49.910156 13.3125 "/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-0-2" x="39.024775" y="11.312507"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M -22.67572 1.595958 L -22.67572 -1.594164 " transform="matrix(0.995505, 0, 0, -0.995505, 48.323784, 55.291909)"/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-1-0" x="8.993388" y="67.352447"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-2-0" x="16.707464" y="67.352447"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 45.356676 1.595958 L 45.356676 -1.594164 " transform="matrix(0.995505, 0, 0, -0.995505, 48.323784, 55.291909)"/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-2-1" x="84.434717" y="67.352447"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 90.708991 1.595958 L 90.708991 -1.594164 " transform="matrix(0.995505, 0, 0, -0.995505, 48.323784, 55.291909)"/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-2-2" x="129.583837" y="67.352447"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 136.065229 1.595958 L 136.065229 -1.594164 " transform="matrix(0.995505, 0, 0, -0.995505, 48.323784, 55.291909)"/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-2-3" x="174.735943" y="67.352447"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 1.593536 -22.677222 L -1.592662 -22.677222 " transform="matrix(0.995505, 0, 0, -0.995505, 48.323784, 55.291909)"/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-1-0" x="29.982607" y="88.34067"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-2-0" x="37.696683" y="88.34067"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 1.593536 22.679017 L -1.592662 22.679017 " transform="matrix(0.995505, 0, 0, -0.995505, 48.323784, 55.291909)"/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-2-0" x="37.695777" y="43.18956"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-0-3" x="22.02753" y="28.634287"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-0-4" x="89.466993" y="28.634287"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#f3_glyph-0-5" x="179.884692" y="88.727921"/>
+</g>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M -22.679644 22.679017 L 45.356676 22.679017 L 136.073077 -22.677222 " transform="matrix(0.995505, 0, 0, -0.995505, 48.323784, 55.291909)"/>
+<path fill="none" stroke-width="0.3985" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-dasharray="2.98883 2.98883" stroke-miterlimit="10" d="M -22.67572 -0.00106464 L -22.679644 22.679017 M 45.356676 -0.00106464 L 45.356676 22.679017 M 136.065229 -0.00106464 L 136.073077 -22.677222 L 0.000437045 -22.677222 " transform="matrix(0.995505, 0, 0, -0.995505, 48.323784, 55.291909)"/>
+</svg></div></div></div></div></div><div class="options"><div class="short-ans-group"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_5_1" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_5_2')" onkeydown="movePrev(event, this, null)"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_5_2" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_5_3')" onkeydown="movePrev(event, this, 'P3_Cau_5_1')"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_5_3" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_5_4')" onkeydown="movePrev(event, this, 'P3_Cau_5_2')"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_5_4" oninput="this.value=this.value.replace('.', ','); moveNext(this, null)" onkeydown="movePrev(event, this, 'P3_Cau_5_3')"></div></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Ta có <ul><li>$S_1=\displaystyle\int_{-1}^2 f(x) \,\mathrm{d}x=3 \Leftrightarrow F(2)-F(-1)=3 \Leftrightarrow F(2)=1$.</li><li>$S_2=\displaystyle\int_2^4 f(x) \,\mathrm{d}x=1 \Leftrightarrow F(4)-F(2)=1 \Leftrightarrow F(4)=2$.</li><li>$S_3=-\displaystyle\int_4^{6} f(x) \,\mathrm{d}x=1 \Leftrightarrow F(4)-F(6)=1 \Leftrightarrow F(6)=1$.</li></ul> Vậy $F(4)+F(6)=3$.</div></div></div>
+<div class="question"><div class="question-text"><div class="tp"><b>Câu 6:</b> Cho hàm số $f(x)$ xác định trên $\mathbb{R}$ bởi $f(x) = \left\{\begin{aligned}&amp;3x^2 + 1 &amp;&amp; \text{ khi } x \le 1 \\&amp;4x &amp;&amp; \text{ khi } x &gt; 1\end{aligned}\right.$. Tính giá trị của tích phân $I = \displaystyle\int_0^2 f(x) \,\mathrm{d}x$.</div></div><div class="options"><div class="short-ans-group"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_6_1" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_6_2')" onkeydown="movePrev(event, this, null)"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_6_2" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_6_3')" onkeydown="movePrev(event, this, 'P3_Cau_6_1')"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_6_3" oninput="this.value=this.value.replace('.', ','); moveNext(this, 'P3_Cau_6_4')" onkeydown="movePrev(event, this, 'P3_Cau_6_2')"><input type="text" class="short-ans-box" maxlength="1" id="P3_Cau_6_4" oninput="this.value=this.value.replace('.', ','); moveNext(this, null)" onkeydown="movePrev(event, this, 'P3_Cau_6_3')"></div></div><div class="solution-box"><div class="tp"><b>Lời giải chi tiết:</b> Do hàm số thay đổi công thức tại $x=1$ nằm trong khoảng $(0;2)$, ta tách tích phân thành hai phần \[
+		I = \displaystyle\int_0^2 f(x) \,\mathrm{d}x = \displaystyle\int_0^1 f(x) \,\mathrm{d}x + \displaystyle\int_1^2 f(x) \,\mathrm{d}x.
+		\] <ul><li>Trên đoạn $[0;1]$, ta có $f(x) = 3x^2 + 1$. \[
+			\Rightarrow \displaystyle\int_0^1 f(x) \,\mathrm{d}x = \displaystyle\int_0^1 \left(3x^2 + 1\right) \,\mathrm{d}x = \left(x^3 + x\right) \bigg|_0^1 = (1+1) - 0 = 2.
+			\]</li><li>Trên đoạn $[1;2]$, ta có $f(x) = 4x$. \[
+			\Rightarrow \displaystyle\int_1^2 f(x) \,\mathrm{d}x = \displaystyle\int_1^2 4x \,\mathrm{d}x = 2x^2 \bigg|_1^2 = 2\left(2^2\right) - 2\left(1^2\right) = 8 - 2 = 6.
+			\]</li></ul> Vậy $I = 2 + 6 = 8$.</div></div></div>
+        <button type="button" class="submit-btn" id="submitBtn" onclick="submitQuiz()">Nộp Bài</button>
+        <button type="button" class="submit-btn" id="viewSolBtn" onclick="showPasswordPrompt()" style="background: #17a2b8;">Xem Đáp Án & Lời Giải</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <div id="passwordPrompt">
+        <h4>Mở Khóa Lời Giải</h4>
+        <p style="color: #856404; font-size: 14px; margin-top: 0;">Nhập mật khẩu từ Giáo viên để xem đáp án chi tiết.</p>
+        <input type="password" id="solPassword" placeholder="Nhập mật khẩu...">
+        <button type="button" onclick="checkPassword()">Xem</button>
+    </div>
+
+    <script>
+        const ua = navigator.userAgent || navigator.vendor || window.opera;
+        if ((ua.indexOf("FBAN") === -1) && (ua.indexOf("FBAV") === -1) && (ua.indexOf("Zalo") === -1)) {
+            document.getElementById("zaloWarning").style.display = "none";
+        }
+
+        const GAS_URL = ""; 
+        const correctAnswers = {"P1_Cau_1": "C", "P1_Cau_2": "D", "P1_Cau_3": "C", "P1_Cau_4": "D", "P1_Cau_5": "A", "P1_Cau_6": "D", "P1_Cau_7": "C", "P1_Cau_8": "A", "P1_Cau_9": "A", "P1_Cau_10": "D", "P1_Cau_11": "A", "P1_Cau_12": "C", "P2_Cau_1_a": "Đúng", "P2_Cau_1_b": "Sai", "P2_Cau_1_c": "Đúng", "P2_Cau_1_d": "Sai", "P2_Cau_2_a": "Đúng", "P2_Cau_2_b": "Sai", "P2_Cau_2_c": "Đúng", "P2_Cau_2_d": "Sai", "P2_Cau_3_a": "Đúng", "P2_Cau_3_b": "Đúng", "P2_Cau_3_c": "Sai", "P2_Cau_3_d": "Sai", "P2_Cau_4_a": "Sai", "P2_Cau_4_b": "Đúng", "P2_Cau_4_c": "Sai", "P2_Cau_4_d": "Sai", "P3_Cau_1": "38", "P3_Cau_2": "32", "P3_Cau_3": "320", "P3_Cau_4": "35,7", "P3_Cau_5": "3", "P3_Cau_6": "8"};
+        let isSubmitted = false;
+        
+        function moveNext(current, nextId) {
+            if (current.value.length > 1) current.value = current.value.slice(0, 1);
+            if (current.value.length === 1 && nextId) document.getElementById(nextId).focus();
+        }
+        function movePrev(e, current, prevId) {
+            if (e.key === "Backspace" && current.value === "" && prevId) document.getElementById(prevId).focus();
+        }
+
+        let timeLimit = 45 * 60;
+        let timerEl = document.getElementById("timer");
+        let countdown = setInterval(function() {
+            if(isSubmitted) { clearInterval(countdown); return; }
+            if(timeLimit <= 0) {
+                clearInterval(countdown);
+                timerEl.innerHTML = "HẾT GIỜ!";
+                alert("Đã hết thời gian làm bài. Hệ thống tự động nộp bài!");
+                submitQuiz(true); 
+            } else {
+                let m = Math.floor(timeLimit / 60);
+                let s = timeLimit % 60;
+                timerEl.innerHTML = m.toString().padStart(2, '0') + ":" + s.toString().padStart(2, '0');
+                timeLimit--;
+            }
+        }, 1000);
+
+        function submitQuiz(autoSubmit = false) {
+            if (isSubmitted) return;
+            const name = document.getElementById('studentName').value.trim();
+            const className = document.getElementById('studentClass').value.trim();
+            
+            if (!autoSubmit && (!name || !className)) {
+                alert("Vui lòng nhập đầy đủ Họ tên và Lớp trước khi nộp!");
+                return;
+            }
+
+            isSubmitted = true;
+            if (typeof timerEl !== 'undefined' && timerEl) {
+                timerEl.innerHTML = "ĐÃ NỘP BÀI";
+            }
+            
+            const form = document.getElementById('quizForm');
+            let score = 0;
+            
+            let payload = {
+                'name': name || "Vô danh (Hết giờ)",
+                'className': className || "N/A"
+            };
+
+            for (let i = 1; i <= 12; i++) {
+                const qName = `P1_Cau_${i}`;
+                const selected = form.querySelector(`input[name="${qName}"]:checked`);
+                let ans = selected ? selected.value : "Bỏ trống";
+                const correctVal = correctAnswers[qName];
+                
+                let isCorrect = (selected && selected.value === correctVal);
+                if (isCorrect) score += 0.25;
+                
+                let statusStr = isCorrect ? "Đúng" : (selected ? "Sai" : "Bỏ trống");
+                payload[qName] = `${ans} (${statusStr})`;
+            }
+
+            const labels_tf = ['a', 'b', 'c', 'd'];
+            for (let i = 1; i <= 4; i++) {
+                let correctCount = 0;
+                let questionDetail = [];
+                
+                labels_tf.forEach(l => {
+                    const qName = `P2_Cau_${i}_${l}`;
+                    if (correctAnswers[qName]) {
+                        const selected = form.querySelector(`input[name="${qName}"]:checked`);
+                        let ans = selected ? selected.value : "Bỏ trống";
+                        const correctVal = correctAnswers[qName];
+                        let isSubCorrect = (selected && selected.value === correctVal);
+                        if (isSubCorrect) correctCount++;
+                        
+                        let subStatus = isSubCorrect ? "Đ" : (selected ? "S" : "-");
+                        questionDetail.push(`${l}:${ans}(${subStatus})`);
+                    }
+                });
+                
+                let p2ScoreEarned = 0;
+                if (correctCount === 1) p2ScoreEarned = 0.1;
+                else if (correctCount === 2) p2ScoreEarned = 0.25;
+                else if (correctCount === 3) p2ScoreEarned = 0.5;
+                else if (correctCount === 4) p2ScoreEarned = 1.0;
+                
+                score += p2ScoreEarned;
+                payload[`P2_Cau_${i}`] = `[${correctCount} ý đúng] ${questionDetail.join(' ')}`;
+            }
+
+            for (let i = 1; i <= 6; i++) {
+                const qName = `P3_Cau_${i}`;
+                if (correctAnswers[qName]) {
+                    let ans = "";
+                    for (let j = 1; j <= 12; j++) {
+                        const box = document.getElementById(`${qName}_${j}`);
+                        if (box && box.value) ans += box.value;
+                    }
+                    
+                    let studentAns = ans.replace(/,/g, '.').replace(/\s+/g, '');
+                    let trueAns = correctAnswers[qName].replace(/,/g, '.').replace(/\s+/g, '');
+                    let isCorrect = (studentAns === trueAns && studentAns !== "");
+                    
+                    if (isCorrect) score += 0.5;
+                    
+                    let statusStr = isCorrect ? "Đúng" : (studentAns !== "" ? "Sai" : "Bỏ trống");
+                    payload[qName] = `${studentAns || 'Bỏ trống'} (${statusStr})`;
+                }
+            }
+
+            const finalScoreString = `${score.toFixed(2)}/10`;
+            payload['score'] = score.toFixed(2);
+            payload['maxScore'] = '10';
+
+            document.getElementById('submitBtn').style.display = 'none';
+            const allInputs = document.querySelectorAll('#quizForm input, #quizForm textarea');
+            allInputs.forEach(input => input.disabled = true);
+
+            const resDiv = document.getElementById('result');
+            resDiv.style.display = 'block';
+            resDiv.innerHTML = `Đang gửi kết quả...`;
+
+            if (!GAS_URL) {
+                resDiv.innerHTML = `Đã chấm xong (chưa cấu hình nơi nhận kết quả).<br>Điểm của bạn: <span style="font-size: 24px; color: red;">${finalScoreString}</span>`;
+                return;
+            }
+
+            fetch(GAS_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(payload)
+            }).then(() => {
+                resDiv.innerHTML = `Nộp bài thành công!<br>Điểm của bạn: <span style="font-size: 24px; color: red;">${finalScoreString}</span>`;
+            }).catch(err => {
+                resDiv.innerHTML = `Nộp bài thành công (Mạng yếu).<br>Điểm: <span style="font-size: 24px; color: red;">${finalScoreString}</span>`;
+            });
+        }
+        
+        function showPasswordPrompt() {
+            document.getElementById('passwordPrompt').style.display = 'block';
+            document.getElementById('viewSolBtn').style.display = 'none';
+            document.getElementById('passwordPrompt').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function checkPassword() {
+            const entered = document.getElementById('solPassword').value;
+            if (entered === "123456") {
+                document.getElementById('passwordPrompt').style.display = 'none';
+                revealSolutions();
+            } else {
+                alert("Mật khẩu không chính xác! Vui lòng liên hệ Giáo viên.");
+            }
+        }
+
+        function revealSolutions() {
+            isSubmitted = true;
+            
+            document.getElementById('submitBtn').style.display = 'none';
+            const allInputs = document.querySelectorAll('#quizForm input, #quizForm textarea');
+            allInputs.forEach(input => input.disabled = true);
+
+            const form = document.getElementById('quizForm');
+            
+            for (let i = 1; i <= 12; i++) {
+                const qName = `P1_Cau_${i}`;
+                const correctVal = correctAnswers[qName];
+                const allRadios = form.querySelectorAll(`input[name="${qName}"]`);
+                allRadios.forEach(radio => {
+                    const lbl = radio.closest('label');
+                    if (radio.value === correctVal) {
+                        lbl.style.backgroundColor = '#d4edda';
+                        lbl.style.borderColor = '#28a745';
+                    } else if (radio.checked) {
+                        lbl.style.backgroundColor = '#f8d7da';
+                        lbl.style.borderColor = '#dc3545';
+                    } else {
+                        lbl.style.opacity = '0.5';
+                    }
+                });
+            }
+
+            const labels_tf = ['a', 'b', 'c', 'd'];
+            for (let i = 1; i <= 4; i++) {
+                labels_tf.forEach(l => {
+                    const qName = `P2_Cau_${i}_${l}`;
+                    if (correctAnswers[qName]) {
+                        const correctVal = correctAnswers[qName];
+                        const allRadios = form.querySelectorAll(`input[name="${qName}"]`);
+                        allRadios.forEach(radio => {
+                            const lbl = radio.closest('label');
+                            if (radio.value === correctVal) {
+                                lbl.style.backgroundColor = '#d4edda';
+                                lbl.style.color = '#155724';
+                            } else if (radio.checked) {
+                                lbl.style.backgroundColor = '#f8d7da';
+                                lbl.style.color = '#721c24';
+                            } else {
+                                lbl.style.opacity = '0.5';
+                            }
+                        });
+                    }
+                });
+            }
+
+            for (let i = 1; i <= 6; i++) {
+                const qName = `P3_Cau_${i}`;
+                if (correctAnswers[qName]) {
+                    let ans = "";
+                    let boxes = [];
+                    for (let j = 1; j <= 12; j++) {
+                        const box = document.getElementById(`${qName}_${j}`);
+                        if (box) {
+                            boxes.push(box);
+                            if (box.value) ans += box.value;
+                        }
+                    }
+                    
+                    let studentAns = ans.replace(/,/g, '.').replace(/\s+/g, '');
+                    let trueAns = correctAnswers[qName].replace(/,/g, '.').replace(/\s+/g, '');
+                    let isCorrect = (studentAns === trueAns && studentAns !== "");
+                    
+                    boxes.forEach(box => {
+                        if (isCorrect) {
+                            box.style.backgroundColor = '#d4edda';
+                            box.style.borderColor = '#28a745';
+                            box.style.color = '#155724';
+                        } else {
+                            box.style.backgroundColor = '#f8d7da';
+                            box.style.borderColor = '#dc3545';
+                            box.style.color = '#721c24';
+                        }
+                    });
+
+                    const group = document.querySelector(`#${qName}_1`).closest('.options');
+                    let correctDiv = document.createElement('div');
+                    correctDiv.style.marginTop = '10px';
+                    correctDiv.innerHTML = `<span style="color:#28a745; font-weight:bold; font-size:16px;">Đáp án đúng: ${correctAnswers[qName]}</span>`;
+                    group.appendChild(correctDiv);
+                }
+            }
+
+            const solutions = document.querySelectorAll('.solution-box');
+            solutions.forEach(box => box.style.display = 'block');
+            
+            setupImageZoom();
+        }
+
+        // --- HÀM ZOOM CẢI TIẾN: LẤY CHIỀU CAO CHUẨN SAU KHI RENDER & HỖ TRỢ KÉO THẢ (PAN) ---
+        function setupImageZoom() {
+            const mediaElements = document.querySelectorAll('.question img, .question svg, .solution-box img, .solution-box svg, .table-responsive svg');
+            
+            mediaElements.forEach(el => {
+                if (el.closest('.zoom-container')) return;
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'zoom-container';
+                
+                const viewport = document.createElement('div');
+                viewport.className = 'zoom-viewport';
+                
+                el.parentNode.insertBefore(wrapper, el);
+                viewport.appendChild(el);
+                wrapper.appendChild(viewport);
+                
+                el.classList.add('zoom-media');
+                
+                // Đợi render hoàn tất để lấy đúng chiều cao tự nhiên
+                setTimeout(() => {
+                    const naturalHeight = el.clientHeight || el.getBoundingClientRect().height || 150;
+                    viewport.style.height = naturalHeight + 'px';
+                    el.dataset.naturalHeight = naturalHeight;
+                }, 50);
+                
+                const toolbar = document.createElement('div');
+                toolbar.className = 'zoom-toolbar';
+                
+                let scale = 1.0;
+                let posX = 0;
+                let posY = 0;
+                const step = 0.25;
+                const minScale = 1.0;
+                const maxScale = 3.0;
+                
+                const btnIn = document.createElement('button');
+                btnIn.innerHTML = '➕';
+                btnIn.title = 'Phóng to';
+                btnIn.className = 'zoom-btn';
+                
+                const btnOut = document.createElement('button');
+                btnOut.innerHTML = '➖';
+                btnOut.title = 'Thu nhỏ';
+                btnOut.className = 'zoom-btn';
+                
+                const btnReset = document.createElement('button');
+                btnReset.innerHTML = '↺';
+                btnReset.title = 'Trở về mặc định';
+                btnReset.className = 'zoom-btn';
+                
+                function updateZoom() {
+                    const natH = parseFloat(el.dataset.naturalHeight) || el.clientHeight || 150;
+                    el.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+                    viewport.style.height = (natH * scale) + 'px';
+                    
+                    btnIn.disabled = (scale >= maxScale);
+                    btnOut.disabled = (scale <= minScale);
+                }
+                
+                btnIn.onclick = (e) => {
+                    e.preventDefault();
+                    if (scale < maxScale) {
+                        scale += step;
+                        updateZoom();
+                    }
+                };
+                
+                btnOut.onclick = (e) => {
+                    e.preventDefault();
+                    if (scale > minScale) {
+                        scale -= step;
+                        if (scale === 1.0) { posX = 0; posY = 0; }
+                        updateZoom();
+                    }
+                };
+                
+                btnReset.onclick = (e) => {
+                    e.preventDefault();
+                    scale = 1.0;
+                    posX = 0;
+                    posY = 0;
+                    updateZoom();
+                };
+
+                // --- TÍNH NĂNG KÉO THẢ (PAN) KHI PHÓNG TO ---
+                let isDragging = false;
+                let startX, startY;
+
+                viewport.addEventListener('mousedown', (e) => {
+                    if (scale > 1.0) {
+                        isDragging = true;
+                        startX = e.clientX - posX;
+                        startY = e.clientY - posY;
+                        e.preventDefault();
+                    }
+                });
+
+                window.addEventListener('mousemove', (e) => {
+                    if (!isDragging) return;
+                    posX = e.clientX - startX;
+                    posY = e.clientY - startY;
+                    updateZoom();
+                });
+
+                window.addEventListener('mouseup', () => {
+                    isDragging = false;
+                });
+
+                // Hỗ trợ cảm ứng trên thiết bị di động (Touch support)
+                viewport.addEventListener('touchstart', (e) => {
+                    if (scale > 1.0 && e.touches.length === 1) {
+                        isDragging = true;
+                        startX = e.touches[0].clientX - posX;
+                        startY = e.touches[0].clientY - posY;
+                    }
+                }, { passive: true });
+
+                window.addEventListener('touchmove', (e) => {
+                    if (!isDragging || e.touches.length !== 1) return;
+                    posX = e.touches[0].clientX - startX;
+                    posY = e.touches[0].clientY - startY;
+                    updateZoom();
+                }, { passive: true });
+
+                window.addEventListener('touchend', () => {
+                    isDragging = false;
+                });
+                
+                toolbar.appendChild(btnIn);
+                toolbar.appendChild(btnOut);
+                toolbar.appendChild(btnReset);
+                
+                wrapper.appendChild(toolbar);
+            });
+        }
+
+        window.onload = function() {
+            setTimeout(setupImageZoom, 300);
+        };
+    </script>
+</body>
+</html>
